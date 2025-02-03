@@ -35,6 +35,7 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import { Signup } from "./pages/Signup";
 
 // Lazy load components
 const Login = React.lazy(() =>
@@ -58,6 +59,9 @@ const App: React.FC = () => {
             <Suspense fallback={<LoadingScreen />}>
               <Route path="/" exact={true}>
                 <Login />
+              </Route>
+              <Route path="/signup" exact={true}>
+                <Signup />
               </Route>
             </Suspense>
           </IonRouterOutlet>

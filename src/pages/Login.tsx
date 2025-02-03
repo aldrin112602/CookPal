@@ -244,4 +244,3 @@ const IntroOrLogin: React.FC<{
   );
 };
 
-export default Login;
