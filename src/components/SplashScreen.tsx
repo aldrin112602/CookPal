@@ -16,12 +16,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
     // Start fade out after 2 seconds
     const timer = setTimeout(() => {
       setFadeOut(true);
-    }, 2000);
+    }, 700);
 
     // Trigger onFinish after fade out animation
     const finishTimer = setTimeout(() => {
       onFinish();
-    }, 2200);
+    }, 800);
 
     return () => {
       clearTimeout(timer);

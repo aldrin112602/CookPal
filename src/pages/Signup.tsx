@@ -82,7 +82,7 @@ const IntroOrSignup: React.FC<{
         className="login-page"
         scrollY={true}
         fullscreen
-        style={{ overFlowY: "auto" }}
+        style={{ overFlowY: "auto !important" }}
       >
         <IonGrid className="ion-no-padding">
           <IonRow className="ion-justify-content-center ion-align-items-center">
@@ -105,7 +105,7 @@ const IntroOrSignup: React.FC<{
   
   
               .welcome-text {
-                font-size: 65px;
+                font-size: 50px;
                 font-weight: bold;
                 color: #222;
                 line-height: 85px;

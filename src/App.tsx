@@ -35,12 +35,16 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import { Signup } from "./pages/Signup";
 
 // Lazy load components
 const Login = React.lazy(() =>
   import("./pages/Login").then((module) => ({
     default: module.Login,
+  }))
+);
+const Signup = React.lazy(() =>
+  import("./pages/Signup").then((module) => ({
+    default: module.Signup,
   }))
 );
 
