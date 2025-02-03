@@ -1,0 +1,8 @@
+{
+  "name": "CookPal",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "e0ccc667"
+}

@@ -1,0 +1,87 @@
+.intro-container {
+  --background: #000;
+}
+
+.slide-container {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.9));
+}
+
+.logotype {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 37px;
+  object-fit: cover;
+}
+
+.slide-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  filter: brightness(70%);
+}
+
+.slide-title {
+  font-size: 35px;
+  font-weight: bold;
+  color: #fbbf24;
+  margin-bottom: 1rem;
+  line-height: 40px;
+}
+
+.slide-description {
+  font-size: 16px;
+  color: rgb(255, 255, 255);
+  margin-bottom: 4rem;
+  line-height: 20px;
+}
+
+.progress-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #fbbf24;
+  transition: width 0.3s ease;
+}
+
+.next-button {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  --background: transparent;
+  --border-radius: 50%;
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --color: #fbbf24;
+  z-index: 1000;
+}
+
+.get-started-button {
+  --background: #fbbf24;
+  --color: #000;
+  --border-radius: 9999px;
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  font-weight: 500;
+  margin-bottom: 3rem;
+}
