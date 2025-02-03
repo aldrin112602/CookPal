@@ -168,22 +168,22 @@ const IntroOrLogin: React.FC<{
 
         <div className="form-container" style={{ marginTop: "50px" }}>
           <form onSubmit={handleLogin}>
-            <div className="input-label">Email/Username:</div>
+            <div className="input-label">Email/Username</div>
             <IonInput
               mode="md"
               type="email"
               fill="outline"
+              placeholder="Enter your email or username"
               required
             />
 
-            <div className="input-label">Password:</div>
+            <div className="input-label">Password</div>
             <IonInput
               mode="md"
               type="password"
               required
               fill="outline"
-              style={{ "--color": "#000000" }}
-              
+              placeholder="Enter your password"
             >
               <IonInputPassword slot="end" color="medium"></IonInputPassword>
             </IonInput>
