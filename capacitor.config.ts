@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   plugins: {
     keyboard: {
-      resize: "body"
+      resize: "ionic" // Change this to "ionic" or "none"
     }
   }
 };

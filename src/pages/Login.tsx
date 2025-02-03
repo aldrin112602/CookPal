@@ -73,7 +73,7 @@ const IntroOrLogin: React.FC<{
     <Intro onFinish={handleFinishIntro} />
   ) : (
     <IonPage>
-      <IonContent className="login-page" scrollY={true}>
+      <IonContent className="login-page" scrollY={true} fullscreen style={{overFlowY: "auto"}}>
         <IonGrid className="ion-no-padding">
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size="12" sizeMd="6" sizeLg="4" sizeXl="4">
@@ -133,7 +133,7 @@ const IntroOrLogin: React.FC<{
             }
 
             ion-input {
-              --border-radius: 15px;
+              --border-radius: 15px !important;
               margin-bottom: 1rem;
               background: #ffffff;
             }
@@ -178,7 +178,7 @@ const IntroOrLogin: React.FC<{
                   <div className="input-label">Email/Username</div>
                   <IonInput
                     mode="md"
-                    type="email"
+                    type="text"
                     fill="outline"
                     placeholder="Enter your email or username"
                     required
