@@ -32,9 +32,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   return (
     <IonContent>
       <div className={`splash-container ${fadeOut ? "fade-out" : ""}`}>
-        <img src={SplashImg} alt="Splash Image" className="splash-img" />
-        <img src={Logo} alt="Logo" width="219px" height="220" />
-        <img src={LogoType} alt="Logo Type" className="logotype2" />
+        <img loading="lazy"  src={SplashImg} alt="Splash Image" className="splash-img" />
+        <img loading="lazy"  src={Logo} alt="Logo" width="219px" height="220" />
+        <img loading="lazy"  src={LogoType} alt="Logo Type" className="logotype2" />
       </div>
     </IonContent>
   );

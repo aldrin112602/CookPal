@@ -45,13 +45,13 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
       <Swiper onSlideChange={handleSlideChange} className="h-full">
         <SwiperSlide>
           <div className="slide-container">
-          <img
+          <img loading="lazy" 
               src={LogoType}
               alt="Logo Type"
               className="logotype"
             />
 
-            <img
+            <img loading="lazy" 
               src={IntroPng1}
               alt="Personal Cooking"
               className="slide-image"
@@ -73,12 +73,12 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
 
         <SwiperSlide>
           <div className="slide-container">
-          <img
+          <img loading="lazy" 
               src={LogoType}
               alt="Logo Type"
               className="logotype"
             />
-            <img src={IntroPng2} alt="Add Recipe" className="slide-image" />
+            <img loading="lazy"  src={IntroPng2} alt="Add Recipe" className="slide-image" />
             <IonText>
               <h2 className="slide-title  averia-serif-libre-bold">Add Your Recipe</h2>
               <p className="slide-description instrument-sans-regular">
@@ -93,12 +93,12 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
 
         <SwiperSlide>
           <div className="slide-container">
-          <img
+          <img loading="lazy" 
               src={LogoType}
               alt="Logo Type"
               className="logotype"
             />
-            <img
+            <img loading="lazy" 
               src={IntroPng3}
               alt="Cook with Confidence"
               className="slide-image"

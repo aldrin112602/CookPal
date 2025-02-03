@@ -5,6 +5,9 @@ import {
   IonInputPasswordToggle as IonInputPassword,
   IonButton,
   IonIcon,
+  IonGrid,
+  IonRow,
+  IonCol,
   useIonLoading,
   useIonRouter,
 } from "@ionic/react";
@@ -71,10 +74,14 @@ const IntroOrLogin: React.FC<{
   ) : (
     <IonPage>
       <IonContent className="login-page" scrollY={true}>
-        <style>
-          {`
+        <IonGrid className="ion-no-padding">
+          <IonRow className="ion-justify-content-center ion-align-items-center">
+            <IonCol size="12" sizeMd="6" sizeLg="4" sizeXl="4">
+              <style>
+                {`
             .login-page {
               --background:rgb(245, 244, 241);
+              min-height: 100vh;
             }
 
             .top-section {
@@ -95,8 +102,8 @@ const IntroOrLogin: React.FC<{
               align-items: center;
               justify-content: center;
               position: absolute;
-              right: 1.2rem;
-              top: 80%;
+              right: 1.3rem;
+              top: 70%;
             }
 
             .welcome-text {
@@ -126,7 +133,7 @@ const IntroOrLogin: React.FC<{
             }
 
             ion-input {
-              --border-radius: 8px;
+              --border-radius: 15px;
               margin-bottom: 1rem;
               background: #ffffff;
             }
@@ -137,7 +144,7 @@ const IntroOrLogin: React.FC<{
               --background: #000000;
               --color: #ECD659;
               margin: 1rem 0;
-              --border-radius: 4px;
+              --border-radius: 15px;
               height: 50px;
               text-transform: none;
 
@@ -150,74 +157,88 @@ const IntroOrLogin: React.FC<{
               display: block;
             }
           `}
-        </style>
+              </style>
 
-        <div className="top-section">
-          <div className="logo-circle">
-            <img src={Logo2} alt="Logo" width="130" />
-          </div>
-          <h1 className="welcome-text">
-            Hey
-            <br />
-            There
-            <br />
-            Pal!
-          </h1>
-          <p className="subtitle">Please Sign In to continue.</p>
-        </div>
+              <div className="top-section">
+                <div className="logo-circle">
+                  <img loading="lazy" src={Logo2} alt="Logo" width="130" />
+                </div>
+                <h1 className="welcome-text">
+                  Hey
+                  <br />
+                  There
+                  <br />
+                  Pal!
+                </h1>
+                <p className="subtitle">Please Sign In to continue.</p>
+              </div>
 
-        <div className="form-container" style={{ marginTop: "50px" }}>
-          <form onSubmit={handleLogin}>
-            <div className="input-label">Email/Username</div>
-            <IonInput
-              mode="md"
-              type="email"
-              fill="outline"
-              placeholder="Enter your email or username"
-              required
-            />
+              <div className="form-container" style={{ marginTop: "6rem" }}>
+                <form onSubmit={handleLogin}>
+                  <div className="input-label">Email/Username</div>
+                  <IonInput
+                    mode="md"
+                    type="email"
+                    fill="outline"
+                    placeholder="Enter your email or username"
+                    required
+                  />
 
-            <div className="input-label">Password</div>
-            <IonInput
-              mode="md"
-              type="password"
-              required
-              fill="outline"
-              placeholder="Enter your password"
-            >
-              <IonInputPassword slot="end" color="medium"></IonInputPassword>
-            </IonInput>
+                  <div className="input-label">Password</div>
+                  <IonInput
+                    mode="md"
+                    type="password"
+                    required
+                    fill="outline"
+                    placeholder="Enter your password"
+                  >
+                    <IonInputPassword
+                      slot="end"
+                      color="medium"
+                    ></IonInputPassword>
+                  </IonInput>
 
-            <IonButton expand="block" className="login-button" type="submit">
-              Sign In
-              <IonIcon icon={logInOutline} slot="end"/>
-            </IonButton>
+                  <IonButton
+                    expand="block"
+                    className="login-button"
+                    type="submit"
+                  >
+                    Sign In
+                    <IonIcon icon={logInOutline} slot="end" />
+                  </IonButton>
 
-            <p style={{ textAlign: "center" }}>
-              Don't have an account?{" "}
-              <a
-                href="/signup"
-                className="signup-link"
-                style={{ cursor: "pointer", textDecoration: "underline", display: "inline-block" }}
-              >
-                Sign Up
-              </a>
-            </p>
+                  <p style={{ textAlign: "center" }}>
+                    Don't have an account?{" "}
+                    <a
+                      href="/signup"
+                      className="signup-link"
+                      style={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        display: "inline-block",
+                      }}
+                    >
+                      Sign Up
+                    </a>
+                  </p>
 
-            <p style={{ textAlign: "center", marginTop: "1rem" }}>
-              <a
-                style={{
-                  cursor: "pointer",
-                  color: "#aaa",
-                  textDecoration: "none",
-                }}
-                onClick={handleSeeIntroAgain}
-              >
-                See Intro Again
-              </a>
-            </p>
-          </form>
-        </div>
+                  <p style={{ textAlign: "center", marginTop: "1rem" }}>
+                    <a
+                      style={{
+                        cursor: "pointer",
+                        color: "#aaa",
+                        textDecoration: "none",
+                      }}
+                      onClick={handleSeeIntroAgain}
+                    >
+                      See Intro Again
+                    </a>
+                  </p>
+                </form>
+              </div>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonContent>
     </IonPage>
   );
