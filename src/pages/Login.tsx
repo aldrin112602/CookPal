@@ -10,6 +10,7 @@ import {
   IonCol,
   useIonLoading,
   useIonRouter,
+  IonRouterLink,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { logInOutline, personCircleOutline } from "ionicons/icons";
@@ -73,7 +74,12 @@ const IntroOrLogin: React.FC<{
     <Intro onFinish={handleFinishIntro} />
   ) : (
     <IonPage>
-      <IonContent className="login-page" scrollY={true} fullscreen style={{overFlowY: "auto"}}>
+      <IonContent
+        className="login-page"
+        scrollY={true}
+        fullscreen
+        style={{ overFlowY: "auto" }}
+      >
         <IonGrid className="ion-no-padding">
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size="12" sizeMd="6" sizeLg="4" sizeXl="4">
@@ -209,7 +215,7 @@ const IntroOrLogin: React.FC<{
 
                   <p style={{ textAlign: "center" }}>
                     Don't have an account?{" "}
-                    <a
+                    <IonRouterLink
                       href="/signup"
                       className="signup-link"
                       style={{
@@ -219,7 +225,7 @@ const IntroOrLogin: React.FC<{
                       }}
                     >
                       Sign Up
-                    </a>
+                    </IonRouterLink>
                   </p>
 
                   <p style={{ textAlign: "center", marginTop: "1rem" }}>
@@ -243,4 +249,3 @@ const IntroOrLogin: React.FC<{
     </IonPage>
   );
 };
-

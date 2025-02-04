@@ -10,6 +10,7 @@ import {
   IonCol,
   useIonLoading,
   useIonRouter,
+  IonRouterLink,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import {
@@ -225,7 +226,7 @@ const IntroOrSignup: React.FC<{
 
                   <p style={{ textAlign: "center" }}>
                     Already have an account?{" "}
-                    <a
+                    <IonRouterLink
                       href="/"
                       className="signup-link"
                       style={{
@@ -234,8 +235,8 @@ const IntroOrSignup: React.FC<{
                         display: "inline-block",
                       }}
                     >
-                      Log In
-                    </a>
+                      Sign In
+                    </IonRouterLink>
                   </p>
 
                   <p style={{ textAlign: "center", marginTop: "1rem" }}>
