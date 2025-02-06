@@ -9,15 +9,11 @@ import {
   IonRow,
   IonCol,
   useIonLoading,
-  useIonRouter,
   IonRouterLink,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import {
   checkmarkDone,
-  checkmarkDoneCircleSharp,
-  logInOutline,
-  personCircleOutline,
 } from "ionicons/icons";
 import { Preferences } from "@capacitor/preferences";
 import Intro from "../components/Intro";
@@ -26,7 +22,6 @@ import LogoType from "../assets/images/logotype.png";
 const INTRO_KEY = "intro-seen";
 
 export const Signup: React.FC = () => {
-  const router = useIonRouter();
   const [introSeen, setIntroSeen] = useState(false);
   const [splash, setSplash] = useState(true);
   const [present, dismiss] = useIonLoading();
