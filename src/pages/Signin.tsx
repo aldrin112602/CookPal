@@ -17,6 +17,7 @@ import Intro from "../components/Intro";
 import Logo2 from "../assets/images/logo2.png";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
+import { Router } from "react-router";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
@@ -30,7 +31,7 @@ export const Signin: React.FC = () => {
   const [reqError, setReqError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
-
+ 
   useEffect(() => {
     (async () => {
       const seen = await Preferences.get({ key: INTRO_KEY });
@@ -64,6 +65,8 @@ export const Signin: React.FC = () => {
       }
       setReqError("");
       setIsValid(true);
+      window.location.href = '/home'
+      
     } catch (error: any) {
       const { message } = error;
       if (message.toLowerCase().trim() == "network error") {

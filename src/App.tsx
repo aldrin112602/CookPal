@@ -46,6 +46,18 @@ const Signup = React.lazy(() =>
   }))
 );
 
+const Home = React.lazy(() =>
+  import("./pages/Home").then((module) => ({
+    default: module.Home,
+  }))
+);
+
+const Favorites = React.lazy(() =>
+  import("./pages/Favorites").then((module) => ({
+    default: module.Favorites,
+  }))
+);
+
 
 setupIonicReact();
 
@@ -55,10 +67,17 @@ const App: React.FC = () => (
       <IonRouterOutlet id="main">
         <Suspense fallback={<LoadingScreen />}>
           <Route path="/" exact={true}>
-            <Signin />
+            {/* <Signin /> */}
+            <Home/>
           </Route>
           <Route path="/signup" exact={true}>
             <Signup />
+          </Route>
+          <Route path="/home" exact={true}>
+            <Home />
+          </Route>
+          <Route path="/favorites" exact={true}>
+            <Favorites />
           </Route>
         </Suspense>
       </IonRouterOutlet>

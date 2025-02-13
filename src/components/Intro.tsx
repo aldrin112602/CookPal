@@ -57,7 +57,7 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
               className="slide-image"
             />
             <IonText>
-              <h3 className="slide-title  averia-serif-libre-bold">
+              <h3 className="slide-title  caprasimo-bold">
                 Your Personal
                 <br />
                 Cooking Companion
@@ -80,7 +80,7 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
             />
             <img loading="lazy"  src={IntroPng2} alt="Add Recipe" className="slide-image" />
             <IonText>
-              <h2 className="slide-title  averia-serif-libre-bold">Add Your Recipe</h2>
+              <h2 className="slide-title  caprasimo-bold">Add Your Recipe</h2>
               <p className="slide-description instrument-sans-regular">
                 Easily store and organize your favorite recipes to cook your
                 favorite dishes. Track ingredients and instructions for each
@@ -104,7 +104,7 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
               className="slide-image"
             />
             <IonText>
-              <h2 className="slide-title  averia-serif-libre-bold">
+              <h2 className="slide-title  caprasimo-bold">
                 Cook with
                 <br />
                 Confidence
