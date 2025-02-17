@@ -27,40 +27,62 @@ import {
 import React from "react";
 import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.png";
+import { useState } from "react";
 
 export const Home: React.FC = () => {
   const image =
     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg";
   const recipes = [
     {
+      id: 1,
       title: "Filipino Style Pork Adobo",
       time: "45 min",
       price: "₱181.25",
       image,
+      isFavorite: false,
     },
     {
+      id: 2,
       title: "Fried Chicken",
       time: "25 min",
       price: "₱180 - ₱200",
       image,
+      isFavorite: false,
     },
     {
-      title: "Filipino Style Pork Adobo",
+      id: 3,
+      title: "Sinigang na bangus",
       time: "45 min",
       price: "₱181.25",
       image,
+      isFavorite: false,
     },
     {
-      title: "Fried Chicken",
+      id: 4,
+      title: "Tortang talong",
       time: "25 min",
       price: "₱180 - ₱200",
       image,
+      isFavorite: false,
     },
   ];
 
+  const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+
+  const handleSearchInput = (e: any) => {
+    const searchTerm = e.target.value.trim().toLowerCase();
+  
+    const filteredItems = recipes.filter((recipe) =>
+      recipe.title.toLowerCase().includes(searchTerm) 
+    );
+  
+    setFilteredRecipes(filteredItems);
+  };
+  
+
   return (
     <IonPage>
-      <IonTabs>
+      <IonTabs className="md:max-w-1/3 w-full mx-auto">
         <IonTab tab="home">
           <div id="home-page">
             <IonHeader>
@@ -86,6 +108,7 @@ export const Home: React.FC = () => {
               <IonSearchbar
                 placeholder="Search Recipe"
                 className="custom-searchbar"
+                onInput={handleSearchInput}
               />
             </IonHeader>
 
@@ -95,27 +118,59 @@ export const Home: React.FC = () => {
                 minHeight: "14rem",
               }}
             >
-              <div
-                className="recipe-grid"
-                style={{
-                  paddingBottom: "30px",
-                }}
-              >
-                {recipes.map((recipe, index) => (
+              <div className="recipe-grid px-4 py-5">
+                {filteredRecipes.map((recipe, index) => (
                   <IonCard key={index} className="recipe-card">
-                    <div className="image-container">
+                    <div className="image-container relative">
                       <IonImg src={recipe.image} />
-                      <IonIcon icon={heart} className="favorite-icon" />
+                      <div className="flex items-center justify-between absolute w-full top-0 mt-7 px-6">
+                        <IonIcon
+                          icon={personCircleOutline}
+                          className="text-4xl text-white"
+                        />
+                        <div className="flex items-center justify-center p-1 bg-yellow-400 rounded-full cursor-pointer">
+                          <IonIcon
+                            icon={recipe.isFavorite ? heart : heartOutline}
+                            className={`text-2xl ${
+                              recipe.isFavorite
+                                ? "text-green-600"
+                                : "text-gray-600"
+                            }`}
+                            onClick={() => {
+                              setFilteredRecipes((curr) =>
+                                curr.map((item) =>
+                                  item.id === recipe.id
+                                    ? { ...item, isFavorite: !item.isFavorite }
+                                    : item
+                                )
+                              );
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                     <IonCardHeader>
                       <IonCardTitle>{recipe.title}</IonCardTitle>
                       <IonCardSubtitle>
-                        <span className="time"> <IonIcon icon={timeOutline}/> {recipe.time}</span>
+                        <span className="time">
+                          {" "}
+                          <IonIcon icon={timeOutline} /> {recipe.time}
+                        </span>
                         <span className="price">{recipe.price}</span>
                       </IonCardSubtitle>
                     </IonCardHeader>
                   </IonCard>
                 ))}
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
               </div>
             </IonContent>
           </div>
