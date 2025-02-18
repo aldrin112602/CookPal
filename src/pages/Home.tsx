@@ -14,6 +14,7 @@ import {
   IonCardSubtitle,
   IonImg,
   IonPage,
+  IonToast,
 } from "@ionic/react";
 import {
   heart,
@@ -23,8 +24,9 @@ import {
   heartOutline,
   timeSharp,
   timeOutline,
+  searchOutline,
 } from "ionicons/icons";
-import React from "react";
+import React, { useRef } from "react";
 import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.png";
 import { useState } from "react";
@@ -32,7 +34,8 @@ import { useState } from "react";
 export const Home: React.FC = () => {
   const image =
     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg";
-  const recipes = [
+
+  const [recipes, setRecipes] = useState([
     {
       id: 1,
       title: "Filipino Style Pork Adobo",
@@ -65,20 +68,27 @@ export const Home: React.FC = () => {
       image,
       isFavorite: false,
     },
-  ];
+  ]);
 
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+  const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
 
   const handleSearchInput = (e: any) => {
     const searchTerm = e.target.value.trim().toLowerCase();
-  
+
+    if (!searchTerm) {
+      setFilteredRecipes(recipes);
+    } else {
+      handleSearchTerm(searchTerm);
+    }
+  };
+
+  const handleSearchTerm = (searchTerm: string) => {
     const filteredItems = recipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(searchTerm) 
+      recipe.title.toLowerCase().includes(searchTerm)
     );
-  
     setFilteredRecipes(filteredItems);
   };
-  
 
   return (
     <IonPage>
@@ -109,6 +119,10 @@ export const Home: React.FC = () => {
                 placeholder="Search Recipe"
                 className="custom-searchbar"
                 onInput={handleSearchInput}
+                ref={searchInputRef}
+                onIonClear={() => {
+                  setFilteredRecipes(recipes);
+                }}
               />
             </IonHeader>
 
@@ -119,56 +133,91 @@ export const Home: React.FC = () => {
               }}
             >
               <div className="recipe-grid px-4 py-5">
-                {filteredRecipes.map((recipe, index) => (
-                  <IonCard key={index} className="recipe-card">
-                    <div className="image-container relative">
-                      <IonImg src={recipe.image} />
-                      <div className="flex items-center justify-between absolute w-full top-0 mt-7 px-6">
-                        <IonIcon
-                          icon={personCircleOutline}
-                          className="text-4xl text-white"
-                        />
-                        <div className="flex items-center justify-center p-1 bg-yellow-400 rounded-full cursor-pointer">
+                {filteredRecipes.length ? (
+                  filteredRecipes.map((recipe, index) => (
+                    <IonCard key={index} className="recipe-card">
+                      <div className="image-container relative">
+                        <IonImg src={recipe.image} />
+                        <div className="flex items-center justify-between absolute w-full top-0 mt-7 px-6">
                           <IonIcon
-                            icon={recipe.isFavorite ? heart : heartOutline}
-                            className={`text-2xl ${
-                              recipe.isFavorite
-                                ? "text-green-600"
-                                : "text-gray-600"
-                            }`}
-                            onClick={() => {
-                              setFilteredRecipes((curr) =>
-                                curr.map((item) =>
+                            icon={personCircleOutline}
+                            className="text-4xl text-white"
+                          />
+                          <div className="flex items-center justify-center p-1 bg-yellow-400 rounded-full cursor-pointer">
+                            <IonIcon
+                              icon={recipe.isFavorite ? heart : heartOutline}
+                              className={`text-2xl ${
+                                recipe.isFavorite
+                                  ? "text-black"
+                                  : "text-gray-600"
+                              }`}
+                              onClick={() => {
+                                // Update the main recipes list
+                                const updatedRecipes = recipes.map((item) =>
                                   item.id === recipe.id
                                     ? { ...item, isFavorite: !item.isFavorite }
                                     : item
-                                )
-                              );
-                            }}
-                          />
+                                );
+                                setRecipes(updatedRecipes);
+
+                                // Update the filtered recipes with the same logic
+                                setFilteredRecipes(
+                                  filteredRecipes.map((item) =>
+                                    item.id === recipe.id
+                                      ? {
+                                          ...item,
+                                          isFavorite: !item.isFavorite,
+                                        }
+                                      : item
+                                  )
+                                );
+
+                                alert(!recipe.isFavorite ? 'Recipe added to favorites!': 'Recipe removed from favorites!');
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <IonCardHeader>
-                      <IonCardTitle>{recipe.title}</IonCardTitle>
-                      <IonCardSubtitle>
-                        <span className="time">
-                          {" "}
-                          <IonIcon icon={timeOutline} /> {recipe.time}
-                        </span>
-                        <span className="price">{recipe.price}</span>
-                      </IonCardSubtitle>
-                    </IonCardHeader>
-                  </IonCard>
-                ))}
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+                      <IonCardHeader>
+                        <IonCardTitle>{recipe.title}</IonCardTitle>
+                        <IonCardSubtitle>
+                          <span className="time">
+                            {" "}
+                            <IonIcon icon={timeOutline} /> {recipe.time}
+                          </span>
+                          <span className="price">{recipe.price}</span>
+                        </IonCardSubtitle>
+                      </IonCardHeader>
+                    </IonCard>
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-10 text-center">
+                    <IonIcon
+                      icon={searchOutline}
+                      className="text-5xl text-gray-400 mb-4"
+                    />
+                    <h3 className="text-xl font-medium text-gray-700 mb-2">
+                      No recipes found
+                    </h3>
+                    <p className="text-gray-500">
+                      We couldn't find any recipes matching your search
+                      criteria.
+                    </p>
+                    <button
+                      className="mt-4 border block bg-black text-white font-medium"
+                      style={{
+                        height: '30px',
+                        width: '130px',
+                        borderRadius: '15px'
+                      }}
+                      onClick={() => {
+                        setFilteredRecipes(recipes);
+                      }}
+                    >
+                      View all recipes
+                    </button>
+                  </div>
+                )}
                 <br />
                 <br />
               </div>
