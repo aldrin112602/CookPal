@@ -8,50 +8,25 @@ import {
   IonTabButton,
   IonIcon,
   IonSearchbar,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonImg,
   IonPage,
-  IonToast,
 } from "@ionic/react";
 import {
-  heart,
-  personCircleOutline,
   homeOutline,
   addOutline,
   heartOutline,
-  timeSharp,
-  timeOutline,
-  searchOutline,
 } from "ionicons/icons";
 import React, { useRef } from "react";
 import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.png";
 import { useState } from "react";
+import RecipeCard from "../components/RecipeCard";
+import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 
 export const Home: React.FC = () => {
   const image =
     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg";
 
   const [recipes, setRecipes] = useState([
-    {
-      id: 1,
-      title: "Filipino Style Pork Adobo",
-      time: "45 min",
-      price: "₱181.25",
-      image,
-      isFavorite: false,
-    },
-    {
-      id: 2,
-      title: "Fried Chicken",
-      time: "25 min",
-      price: "₱180 - ₱200",
-      image,
-      isFavorite: false,
-    },
     {
       id: 3,
       title: "Sinigang na bangus",
@@ -63,6 +38,22 @@ export const Home: React.FC = () => {
     {
       id: 4,
       title: "Tortang talong",
+      time: "25 min",
+      price: "₱180 - ₱200",
+      image,
+      isFavorite: false,
+    },
+    {
+      id: 1,
+      title: "Filipino Style Pork Adobo",
+      time: "45 min",
+      price: "₱181.25",
+      image,
+      isFavorite: false,
+    },
+    {
+      id: 2,
+      title: "Fried Chicken",
       time: "25 min",
       price: "₱180 - ₱200",
       image,
@@ -92,131 +83,77 @@ export const Home: React.FC = () => {
 
   return (
     <IonPage>
-      <IonTabs className="md:max-w-1/3 w-full mx-auto">
+      <IonTabs className="md:max-w-1/3 w-full mx-auto bg-white text-black">
         <IonTab tab="home">
           <div id="home-page">
-            <IonHeader>
+            <IonHeader style={{ boxShadow: "none" }}>
               <IonToolbar>
-                <div className="header-content">
-                  <div className="user-profile">
-                    <IonIcon icon={personCircleOutline} size="large" />
+                <div className="flex items-center justify-between px-4 py-2">
+                  <div className="flex items-center justify-start gap-2">
+                    {/* user profile placeholder */}
+                    <img
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
+                      alt="Profile avatar"
+                      width={"50px"}
+                      className="rounded-full border border-slate-400"
+                      onClick={() => {
+                        // Open profile section
+                      }}
+                    />
+                    <div style={{ lineHeight: "20px" }}>
+                      <span className="block font-semibold">John Doe</span>
+                      <span className="block">johnDoe@gmail.com</span>
+                    </div>
                   </div>
                   <img src={CookPalDesign} alt="CookPal" className="logo" />
                 </div>
               </IonToolbar>
 
-              <div className="title-section">
-                <div className="greeting">Hello There, Pal!</div>
+              <h1 className="caprasimo-bold px-5">
+                Let's make
                 <br />
-                <br />
-                <h1 className="caprasimo-bold">
-                  Let's make
-                  <br />
-                  delicious food's.
-                </h1>
+                delicious food's.
+              </h1>
+
+              <div className="px-3">
+                <IonSearchbar
+                  placeholder="Search Recipe"
+                  className="custom-searchbar"
+                  onInput={handleSearchInput}
+                  ref={searchInputRef}
+                  onIonClear={() => {
+                    setFilteredRecipes(recipes);
+                  }}
+                />
               </div>
-              <IonSearchbar
-                placeholder="Search Recipe"
-                className="custom-searchbar"
-                onInput={handleSearchInput}
-                ref={searchInputRef}
-                onIonClear={() => {
-                  setFilteredRecipes(recipes);
-                }}
-              />
             </IonHeader>
 
             <IonContent
               scrollY={true}
               style={{
-                minHeight: "14rem",
+                minHeight: "45vh",
               }}
             >
-              <div className="recipe-grid px-4 py-5">
+              <div
+                className="px-4 py-5"
+                style={{ background: "#EFD959", borderRadius: "40px 40px 0 0" }}
+              >
                 {filteredRecipes.length ? (
                   filteredRecipes.map((recipe, index) => (
-                    <IonCard key={index} className="recipe-card">
-                      <div className="image-container relative">
-                        <IonImg src={recipe.image} />
-                        <div className="flex items-center justify-between absolute w-full top-0 mt-7 px-6">
-                          <IonIcon
-                            icon={personCircleOutline}
-                            className="text-4xl text-white"
-                          />
-                          <div className="flex items-center justify-center p-1 bg-yellow-400 rounded-full cursor-pointer">
-                            <IonIcon
-                              icon={recipe.isFavorite ? heart : heartOutline}
-                              className={`text-2xl ${
-                                recipe.isFavorite
-                                  ? "text-black"
-                                  : "text-gray-600"
-                              }`}
-                              onClick={() => {
-                                // Update the main recipes list
-                                const updatedRecipes = recipes.map((item) =>
-                                  item.id === recipe.id
-                                    ? { ...item, isFavorite: !item.isFavorite }
-                                    : item
-                                );
-                                setRecipes(updatedRecipes);
-
-                                // Update the filtered recipes with the same logic
-                                setFilteredRecipes(
-                                  filteredRecipes.map((item) =>
-                                    item.id === recipe.id
-                                      ? {
-                                          ...item,
-                                          isFavorite: !item.isFavorite,
-                                        }
-                                      : item
-                                  )
-                                );
-
-                                alert(!recipe.isFavorite ? 'Recipe added to favorites!': 'Recipe removed from favorites!');
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <IonCardHeader>
-                        <IonCardTitle>{recipe.title}</IonCardTitle>
-                        <IonCardSubtitle>
-                          <span className="time">
-                            {" "}
-                            <IonIcon icon={timeOutline} /> {recipe.time}
-                          </span>
-                          <span className="price">{recipe.price}</span>
-                        </IonCardSubtitle>
-                      </IonCardHeader>
-                    </IonCard>
+                    <RecipeCard
+                      key={recipe.id}
+                      recipe={recipe}
+                      recipes={recipes}
+                      setFilteredRecipes={setFilteredRecipes}
+                      setRecipes={setRecipes}
+                      filteredRecipes={filteredRecipes}
+                    />
                   ))
                 ) : (
-                  <div className="flex flex-col items-center justify-center p-10 text-center">
-                    <IonIcon
-                      icon={searchOutline}
-                      className="text-5xl text-gray-400 mb-4"
-                    />
-                    <h3 className="text-xl font-medium text-gray-700 mb-2">
-                      No recipes found
-                    </h3>
-                    <p className="text-gray-500">
-                      We couldn't find any recipes matching your search
-                      criteria.
-                    </p>
-                    <button
-                      className="mt-4 border block bg-black text-white font-medium"
-                      style={{
-                        height: '30px',
-                        width: '130px',
-                        borderRadius: '15px'
-                      }}
-                      onClick={() => {
-                        setFilteredRecipes(recipes);
-                      }}
-                    >
-                      View all recipes
-                    </button>
-                  </div>
+                  <NoResultsFoundRecipe
+                    recipes={recipes}
+                    setFilteredRecipes={setFilteredRecipes}
+                  />
                 )}
                 <br />
                 <br />
