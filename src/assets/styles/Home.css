@@ -18,7 +18,7 @@ ion-tab-bar {
 
 ion-tab-button {
   --color: #666;
-  --color-selected: #000;
+  --color-selected: #3b3b05;
 }
 
 ion-tabs {

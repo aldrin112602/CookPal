@@ -45,7 +45,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   return (
     <IonCard className="recipe-card" key={key}>
       <div className="image-container relative">
-        <IonImg src={recipe.image} />
+        <IonImg src={recipe.image} className="object-fit-cover w-full" style={{
+          height: '240px',
+          width: '100%',
+          objectFit: 'cover'
+        }}/>
         <div className="flex items-start justify-between absolute w-full top-0 mt-3 px-4">
           <div className="flex items-start justify-start">
             <img
@@ -78,11 +82,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
       </div>
       <div
         className="absolute bottom-0 left-0 pb-3 pl-3 pt-0 w-full"
-        style={{ backdropFilter: "blur(2px)", background: "rgba(0,0,0,0.1)" }}
+        style={{ background: "rgba(0,0,0,0.1)" }}
       >
-        <h1 style={{ color: "white", textShadow: "1px 1px 1px #222" }}>
-          {recipe.title}
-        </h1>
+        <div
+          style={{ color: "white", textShadow: "1px 1px 1px #222" }}
+          className="pt-2 mb-2"
+        >
+          <span className="text-2xl font-bold">{recipe.title}</span>
+        </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center justify-start gap-2">
             <span

@@ -23,8 +23,7 @@ import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 
 export const Home: React.FC = () => {
-  const image =
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg";
+ 
 
   const [recipes, setRecipes] = useState([
     {
@@ -32,7 +31,7 @@ export const Home: React.FC = () => {
       title: "Sinigang na bangus",
       time: "45 min",
       price: "₱181.25",
-      image,
+      image: 'https://assets.unileversolutions.com/recipes-v2/110716.png',
       isFavorite: false,
     },
     {
@@ -40,7 +39,7 @@ export const Home: React.FC = () => {
       title: "Tortang talong",
       time: "25 min",
       price: "₱180 - ₱200",
-      image,
+      image: 'https://www.pinoyfamilyrecipes.com/wp-content/uploads/2024/05/Tortang-Talong-1.jpg',
       isFavorite: false,
     },
     {
@@ -48,7 +47,7 @@ export const Home: React.FC = () => {
       title: "Filipino Style Pork Adobo",
       time: "45 min",
       price: "₱181.25",
-      image,
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg',
       isFavorite: false,
     },
     {
@@ -56,7 +55,7 @@ export const Home: React.FC = () => {
       title: "Fried Chicken",
       time: "25 min",
       price: "₱180 - ₱200",
-      image,
+      image: 'https://christieathome.com/wp-content/uploads/2020/10/Facetune_06-10-2020-15-37-58-scaled.jpg',
       isFavorite: false,
     },
   ]);
@@ -105,7 +104,7 @@ export const Home: React.FC = () => {
                       <span className="block">johnDoe@gmail.com</span>
                     </div>
                   </div>
-                  <img src={CookPalDesign} alt="CookPal" className="logo" />
+                  <img src={CookPalDesign} alt="CookPal" className="logo" width={'50px'} />
                 </div>
               </IonToolbar>
 

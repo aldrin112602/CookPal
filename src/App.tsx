@@ -59,6 +59,13 @@ const Favorites = React.lazy(() =>
 );
 
 
+const FeaturedShowcase = React.lazy(() =>
+  import("./pages/FeaturedShowcase").then((module) => ({
+    default: module.FeaturedShowcase,
+  }))
+);
+
+
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -67,11 +74,13 @@ const App: React.FC = () => (
       <IonRouterOutlet id="main">
         <Suspense fallback={<LoadingScreen />}>
           <Route path="/" exact={true}>
-            {/* <Signin /> */}
-            <Home/>
+            <FeaturedShowcase />
           </Route>
           <Route path="/signup" exact={true}>
             <Signup />
+          </Route>
+          <Route path="/signin" exact={true}>
+            <Signin />
           </Route>
           <Route path="/home" exact={true}>
             <Home />
