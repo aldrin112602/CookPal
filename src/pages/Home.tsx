@@ -97,6 +97,7 @@ export const Home: React.FC = () => {
                       className="rounded-full border border-slate-400"
                       onClick={() => {
                         // Open profile section
+                        location.assign('/profile')
                       }}
                     />
                     <div style={{ lineHeight: "20px" }}>

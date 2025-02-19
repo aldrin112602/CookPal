@@ -65,6 +65,12 @@ const FeaturedShowcase = React.lazy(() =>
   }))
 );
 
+const Profile = React.lazy(() =>
+  import("./pages/Profile").then((module) => ({
+    default: module.Profile,
+  }))
+);
+
 
 setupIonicReact();
 
@@ -81,6 +87,9 @@ const App: React.FC = () => (
           </Route>
           <Route path="/signin" exact={true}>
             <Signin />
+          </Route>
+          <Route path="/profile" exact={true}>
+            <Profile />
           </Route>
           <Route path="/home" exact={true}>
             <Home />

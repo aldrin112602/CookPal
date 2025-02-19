@@ -17,7 +17,6 @@ import Intro from "../components/Intro";
 import Logo2 from "../assets/images/logo2.png";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
-import { Router } from "react-router";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =

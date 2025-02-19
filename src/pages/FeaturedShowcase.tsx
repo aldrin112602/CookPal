@@ -1,5 +1,12 @@
 import React from "react";
-import { IonCard, IonCardContent, IonHeader, IonIcon } from "@ionic/react";
+import {
+  IonCard,
+  IonCardContent,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonPage,
+} from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 
 // Define the type for featured items
@@ -11,7 +18,7 @@ interface FeaturedItem {
 
 const featuredRoutes: FeaturedItem[] = [
   {
-    title: "Feaured Show case",
+    title: "Featured Show case",
     path: "/",
     description: "Go to featured show case",
   },
@@ -41,22 +48,26 @@ const featuredRoutes: FeaturedItem[] = [
 
 export const FeaturedShowcase: React.FC = () => {
   return (
-    <div className="p-4 h-screen overflow-y-auto bg-slate-300">
-      {featuredRoutes.map((item, index) => (
-        <IonCard
-          key={index}
-          className="cursor-pointer p-3 py-1 mb-2"
-          onClick={() => location.assign(item.path)}
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="text-md font-medium">{item.title}</h3>
-            <IonIcon
-              icon={arrowForwardOutline}
-              className="text-xl text-gray-600"
-            />
-          </div>
-        </IonCard>
-      ))}
-    </div>
+    <IonPage>
+      <IonContent>
+        <div className="p-4 h-screen overflow-y-auto bg-slate-300 mx-auto">
+          {featuredRoutes.map((item, index) => (
+            <IonCard
+              key={index}
+              className="cursor-pointer p-3 py-1 mb-2"
+              onClick={() => location.assign(item.path)}
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-md font-medium">{item.title}</h3>
+                <IonIcon
+                  icon={arrowForwardOutline}
+                  className="text-xl text-gray-600"
+                />
+              </div>
+            </IonCard>
+          ))}
+        </div>
+      </IonContent>
+    </IonPage>
   );
 };
