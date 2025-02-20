@@ -11,18 +11,18 @@ import {
   IonRouterLink,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { eye, eyeOff, logInOutline } from "ionicons/icons";
+import { checkmarkDone, eye, eyeOff, logInOutline } from "ionicons/icons";
 import { Preferences } from "@capacitor/preferences";
-import Intro from "../components/Intro";
-import Logo2 from "../assets/images/logo2.webp";
+import Intro from "../../components/Intro";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
+import LogoType from "../../assets/images/logotype.webp";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API || "http://localhost:8000/api";
 
-export const Signin: React.FC = () => {
+export const Signup: React.FC = () => {
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [user, setUser] = useState("");
@@ -30,7 +30,7 @@ export const Signin: React.FC = () => {
   const [reqError, setReqError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
- 
+
   useEffect(() => {
     (async () => {
       const seen = await Preferences.get({ key: INTRO_KEY });
@@ -49,12 +49,12 @@ export const Signin: React.FC = () => {
     });
   };
 
-  const handleSignin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await present("Logging in...");
+    await present("Signing up...");
 
     try {
-      const response: any = await axios.post(`${BASE_URL_API}/login`, {
+      const response: any = await axios.post(`${BASE_URL_API}/signup`, {
         user,
         password,
       });
@@ -64,8 +64,6 @@ export const Signin: React.FC = () => {
       }
       setReqError("");
       setIsValid(true);
-      window.location.href = '/home'
-      
     } catch (error: any) {
       const { message } = error;
       if (message.toLowerCase().trim() == "network error") {
@@ -90,7 +88,7 @@ export const Signin: React.FC = () => {
   ) : (
     <IonPage>
       <IonContent
-        className="login-page"
+        className="signup-page"
         scrollY={true}
         fullscreen
         forceOverscroll={false}
@@ -100,7 +98,7 @@ export const Signin: React.FC = () => {
             <IonCol size="12" sizeMd="6" sizeLg="4">
               <style>
                 {`
-                .login-page {
+                .signup-page {
                   --background: rgb(245, 244, 241);
                   min-height: 100%;
                   display: flex;
@@ -132,11 +130,12 @@ export const Signin: React.FC = () => {
                 }
 
                 .welcome-text {
-                  font-size: 90px;
+                  font-size: 50px;
                   font-weight: bold;
                   color: #222;
                   line-height: 85px;
                   letter-spacing: -5%;
+                  text-align: center;
                 }
 
                 .subtitle {
@@ -149,8 +148,7 @@ export const Signin: React.FC = () => {
 
                 .form-container {
                   padding: 2rem;
-                  padding-bottom: 120px;
-                  margin-top: 5rem;
+                  padding-bottom: 180px;
                   flex: 1;
                   overflow-y: auto;
                   position: relative;
@@ -174,7 +172,7 @@ export const Signin: React.FC = () => {
                   text-transform: none;
                 }
 
-                .signup-link {
+                .signin-link {
                   color: rgb(207, 180, 23);
                   text-decoration: none;
                   text-align: center;
@@ -199,24 +197,22 @@ export const Signin: React.FC = () => {
               `}
               </style>
               <div className="top-section">
-                <div className="logo-circle">
-                  <img loading="lazy" src={Logo2} alt="Logo" width="130" />
-                </div>
-                <h1 className="welcome-text">
-                  Hey
-                  <br />
-                  There
-                  <br />
-                  Pal!
-                </h1>
-                <p className="subtitle">Please Sign In to continue.</p>
+                <h1 className="welcome-text">Welcome to</h1>
+                <img
+                  src={LogoType}
+                  alt="CookPal Logo type"
+                  width="50%"
+                  style={{ display: "block", margin: "0 auto" }}
+                />
+                <br />
+                <p className="subtitle">Please Sign Up to continue.</p>
               </div>
 
-              <div className="form-container" style={{ marginTop: "5rem" }}>
-                <form onSubmit={handleSignin}>
-                  <IonInput
+              <div className="form-container">
+                <form onSubmit={handleSignup}>
+                <IonInput
                     value={user}
-                    label="Email/Username"
+                    label="Full Name"
                     labelPlacement="floating"
                     mode="md"
                     className={`${isValid && "ion-valid"} ${
@@ -224,7 +220,33 @@ export const Signin: React.FC = () => {
                     } ${reqError && "ion-touched"}`}
                     type="text"
                     fill="outline"
-                    placeholder="Enter your email or username"
+                    placeholder="John Doe"
+                    onIonInput={(e) => setUser(e.detail.value!)}
+                  />
+                  <IonInput
+                    value={user}
+                    label="Email Adress"
+                    labelPlacement="floating"
+                    mode="md"
+                    className={`${isValid && "ion-valid"} ${
+                      reqError && "ion-invalid"
+                    } ${reqError && "ion-touched"}`}
+                    type="email"
+                    fill="outline"
+                    placeholder="johndoe@example.com"
+                    onIonInput={(e) => setUser(e.detail.value!)}
+                  />
+                  <IonInput
+                    value={user}
+                    label="Username"
+                    labelPlacement="floating"
+                    mode="md"
+                    className={`${isValid && "ion-valid"} ${
+                      reqError && "ion-invalid"
+                    } ${reqError && "ion-touched"}`}
+                    type="text"
+                    fill="outline"
+                    placeholder="Ex: Johndoe_123"
                     onIonInput={(e) => setUser(e.detail.value!)}
                   />
                   <div style={{ position: "relative" }}>
@@ -276,22 +298,22 @@ export const Signin: React.FC = () => {
                     className="login-button"
                     type="submit"
                   >
-                    Sign In
-                    <IonIcon icon={logInOutline} slot="end" />
+                    Sign Up
+                    <IonIcon icon={checkmarkDone} slot="end" />
                   </IonButton>
 
                   <p style={{ textAlign: "center" }}>
-                    Don't have an account?{" "}
+                    ALready have an account?{" "}
                     <IonRouterLink
-                      href="/signup"
-                      className="signup-link"
+                      href="/"
+                      className="signin-link"
                       style={{
                         cursor: "pointer",
                         textDecoration: "underline",
                         display: "inline-block",
                       }}
                     >
-                      Sign Up
+                      Sign In
                     </IonRouterLink>
                   </p>
 

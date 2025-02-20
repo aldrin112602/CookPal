@@ -36,12 +36,12 @@ import React, { Suspense } from "react";
 
 // Lazy load components
 const Signin = React.lazy(() =>
-  import("./pages/Signin").then((module) => ({
+  import("./pages/auth/Signin").then((module) => ({
     default: module.Signin,
   }))
 );
 const Signup = React.lazy(() =>
-  import("./pages/Signup").then((module) => ({
+  import("./pages/auth/Signup").then((module) => ({
     default: module.Signup,
   }))
 );
