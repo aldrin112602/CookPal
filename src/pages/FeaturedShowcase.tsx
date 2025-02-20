@@ -46,6 +46,10 @@ const featuredRoutes: FeaturedItem[] = [
     title: "Verify OTP",
     path: "/verify_otp",
   },
+  {
+    title: "Reset Password",
+    path: "/reset_password",
+  },
 ];
 
 export const FeaturedShowcase: React.FC = () => {

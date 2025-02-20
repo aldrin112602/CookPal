@@ -34,6 +34,7 @@ import "./theme/variables.css";
 import LoadingScreen from "./components/LoadingScreen";
 import React, { Suspense } from "react";
 import { VerifyOTP } from "./pages/auth/VerifyOTP";
+import { ResetPassword } from "./pages/auth/ResetPassword";
 
 // Lazy load components
 const Signin = React.lazy(() =>
@@ -110,6 +111,9 @@ const App: React.FC = () => (
           </Route>
           <Route path="/verify_otp" exact={true}>
             <VerifyOTP />
+          </Route>
+          <Route path="/reset_password" exact={true}>
+            <ResetPassword />
           </Route>
         </Suspense>
       </IonRouterOutlet>
