@@ -13,36 +13,38 @@ import { arrowForwardOutline } from "ionicons/icons";
 interface FeaturedItem {
   title: string;
   path: string;
-  description: string;
 }
 
 const featuredRoutes: FeaturedItem[] = [
   {
     title: "Featured Show case",
     path: "/",
-    description: "Go to featured show case",
   },
-  { title: "Home", path: "/home", description: "Go to the homepage" },
+  { title: "Home", path: "/home" },
 
   {
     title: "Favorites",
     path: "/favorites",
-    description: "Check your saved recipes",
   },
   {
     title: "Signup",
     path: "/signup",
-    description: "Go to Signup page",
   },
   {
     title: "Signin",
     path: "/signin",
-    description: "Go to Signin page",
   },
   {
     title: "Profile",
     path: "/profile",
-    description: "Manage your profile settings",
+  },
+  {
+    title: "Forgot Password",
+    path: "/forgot_password",
+  },
+  {
+    title: "Verify OTP",
+    path: "/verify_otp",
   },
 ];
 

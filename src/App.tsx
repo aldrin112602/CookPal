@@ -33,6 +33,7 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import LoadingScreen from "./components/LoadingScreen";
 import React, { Suspense } from "react";
+import { VerifyOTP } from "./pages/auth/VerifyOTP";
 
 // Lazy load components
 const Signin = React.lazy(() =>
@@ -71,6 +72,13 @@ const Profile = React.lazy(() =>
   }))
 );
 
+const ForgotPassword = React.lazy(() =>
+  import("./pages/auth/ForgotPassword").then((module) => ({
+    default: module.ForgotPassword,
+  }))
+);
+
+
 
 setupIonicReact();
 
@@ -96,6 +104,12 @@ const App: React.FC = () => (
           </Route>
           <Route path="/favorites" exact={true}>
             <Favorites />
+          </Route>
+          <Route path="/forgot_password" exact={true}>
+            <ForgotPassword />
+          </Route>
+          <Route path="/verify_otp" exact={true}>
+            <VerifyOTP />
           </Route>
         </Suspense>
       </IonRouterOutlet>
