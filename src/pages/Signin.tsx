@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import { eye, eyeOff, logInOutline } from "ionicons/icons";
 import { Preferences } from "@capacitor/preferences";
 import Intro from "../components/Intro";
-import Logo2 from "../assets/images/logo2.png";
+import Logo2 from "../assets/images/logo2.webp";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
 

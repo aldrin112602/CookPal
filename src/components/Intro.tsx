@@ -5,10 +5,10 @@ import { chevronForward } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import "swiper/css";
 import "../assets/styles/Intro.css";
-import IntroPng1 from "../assets/images/bg2.png";
-import IntroPng2 from "../assets/images/bg3.png";
-import IntroPng3 from "../assets/images/bg4.png";
-import LogoType from "../assets/images/logotype.png";
+import IntroPng1 from "../assets/images/bg2.webp";
+import IntroPng2 from "../assets/images/bg3.webp";
+import IntroPng3 from "../assets/images/bg4.webp";
+import LogoType from "../assets/images/logotype.webp";
 
 interface ContainerProps {
   onFinish: () => void;

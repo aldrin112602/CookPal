@@ -1,6 +1,6 @@
 import React from "react";
 import { IonContent } from "@ionic/react";
-import Logo from "../assets/images/logo1.png";
+import Logo from "../assets/images/logo1.webp";
 
 const LoadingScreen: React.FC = () => {
   return (

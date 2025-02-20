@@ -17,7 +17,7 @@ import {
 } from "ionicons/icons";
 import React, { useRef } from "react";
 import "../assets/styles/Home.css";
-import CookPalDesign from "../assets/images/CookPal Design.png";
+import CookPalDesign from "../assets/images/CookPal Design.webp";
 import { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";

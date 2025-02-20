@@ -18,7 +18,7 @@ import {
   trashBinOutline,
   trashOutline,
 } from "ionicons/icons";
-import CookPalDesign from "../assets/images/CookPal Design.png";
+import CookPalDesign from "../assets/images/CookPal Design.webp";
 import { ChangeEvent, useRef, useState } from "react";
 
 export const Profile = () => {
@@ -50,11 +50,11 @@ export const Profile = () => {
       await present("Uploading, please wait..");
       if (typeof ev.target?.result === "string" && profilePlaceholder.current) {
         profilePlaceholder.current.src = await ev.target.result;
-        // TODO: call api 
+        // TODO: call api to upload profile
         setTimeout(async () => {
           await dismiss();
         }, 1000)
-      }
+      } 
     };
     event.target.value = "";
   };

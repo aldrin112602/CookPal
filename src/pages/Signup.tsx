@@ -16,7 +16,7 @@ import { Preferences } from "@capacitor/preferences";
 import Intro from "../components/Intro";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
-import LogoType from "../assets/images/logotype.png";
+import LogoType from "../assets/images/logotype.webp";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
