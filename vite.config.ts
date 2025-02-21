@@ -12,6 +12,9 @@ export default defineConfig({
     legacy(),
     tailwindcss(),
   ],
+  server: {
+    allowedHosts: true
+  },
   test: {
     globals: true,
     environment: 'jsdom',

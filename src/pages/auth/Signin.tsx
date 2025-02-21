@@ -20,17 +20,19 @@ import { Keyboard } from "@capacitor/keyboard";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
-  import.meta.env.VITE_BASE_URL_API || "http://localhost:8000/api";
+  import.meta.env.VITE_BASE_URL_API ||
+  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Signin: React.FC = () => {
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
-  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [reqError, setReqError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
- 
+
   useEffect(() => {
     (async () => {
       const seen = await Preferences.get({ key: INTRO_KEY });
@@ -54,27 +56,48 @@ export const Signin: React.FC = () => {
     await present("Logging in...");
 
     try {
-      const response: any = await axios.post(`${BASE_URL_API}/login`, {
-        user,
-        password,
-      });
+      const response: any = await axios.post(
+        `${BASE_URL_API}/login`,
+        JSON.stringify({ email, password }),
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          withCredentials: false,
+          timeout: 10000,
+        }
+      );
+
       if (response.data?.error) {
-        setReqError(response.data?.error);
+        alert(response.data?.error);
         return;
       }
-      setReqError("");
+      setEmailError("");
+      setPasswordError("");
       setIsValid(true);
-      window.location.href = '/home'
-      
+
+      console.log(response);
+
+      // window.location.href = "/home";
     } catch (error: any) {
+      // alert(JSON.stringify(error));
+      // console.log(error)
       const { message } = error;
       if (message.toLowerCase().trim() == "network error") {
-        setReqError(
+        alert(
           "It looks like you're offline. Please check your connection and try again."
         );
         return;
       }
-      setReqError(message);
+
+      const { data } = error.response;
+      const { errors } = data;
+      const { email } = errors;
+      const { password } = errors;
+      setEmailError(email[0] ?? "");
+      setPasswordError(password[0] ?? "");
     } finally {
       await dismiss();
     }
@@ -215,24 +238,39 @@ export const Signin: React.FC = () => {
               <div className="form-container" style={{ marginTop: "5rem" }}>
                 <form onSubmit={handleSignin}>
                   <IonInput
-                    value={user}
-                    label="Email/Username"
+                    value={email}
+                    label="Email Address"
                     labelPlacement="floating"
                     mode="md"
                     className={`${isValid && "ion-valid"} ${
-                      reqError && "ion-invalid"
-                    } ${reqError && "ion-touched"}`}
+                      emailError && "ion-invalid"
+                    } ${emailError && "ion-touched"}`}
                     type="text"
                     fill="outline"
-                    placeholder="Enter your email or username"
-                    onIonInput={(e) => setUser(e.detail.value!)}
+                    placeholder="Enter your email address"
+                    onIonInput={(e) => setEmail(e.detail.value!)}
                   />
-                  <div style={{ position: "relative" }}>
+
+                  {/* email error message */}
+                  {emailError && (
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
+                        marginTop: "-15px",
+                        color: "red",
+                        opacity: "0.8",
+                      }}
+                    >
+                      {emailError}
+                    </p>
+                  )}
+
+                  <div style={{ position: "relative" }} className="mt-2">
                     <IonInput
                       mode="md"
                       className={`${isValid && "ion-valid"} ${
-                        reqError && "ion-invalid"
-                      } ${reqError && "ion-touched"}`}
+                        passwordError && "ion-invalid"
+                      } ${passwordError && "ion-touched"}`}
                       type={showPassword ? "text" : "password"}
                       label="Password"
                       labelPlacement="floating"
@@ -257,17 +295,17 @@ export const Signin: React.FC = () => {
                     />
                   </div>
 
-                  {/* error message */}
-                  {reqError && (
+                  {/* password error message */}
+                  {passwordError && (
                     <p
                       style={{
                         fontSize: "0.9rem",
-                        marginTop: "1rem",
+                        marginTop: "-15px",
                         color: "red",
                         opacity: "0.8",
                       }}
                     >
-                      {reqError}
+                      {passwordError}
                     </p>
                   )}
 

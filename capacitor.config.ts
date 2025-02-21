@@ -4,6 +4,9 @@ const config: CapacitorConfig = {
   appId: "io.ionic.starter",
   appName: "CookPal",
   webDir: "dist",
+  "server": {
+    "allowNavigation": ["*.trycloudflare.com"]
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 200,
