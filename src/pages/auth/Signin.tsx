@@ -51,6 +51,19 @@ export const Signin: React.FC = () => {
     });
   };
 
+  // set token and user data
+  const setTokenAndUserData = async (token: string, user: any) => {
+    await Preferences.set({
+      key: "TOKEN",
+      value: token,
+    });
+
+    await Preferences.set({
+      key: "USER",
+      value: JSON.stringify(user),
+    });
+  };
+
   const handleSignin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await present("Logging in...");
@@ -78,12 +91,14 @@ export const Signin: React.FC = () => {
       setPasswordError("");
       setIsValid(true);
 
-      console.log(response);
-
-      // window.location.href = "/home";
+      // get data
+      const { data } = response;
+      const { token, user } = data;
+      await setTokenAndUserData(token, user);
+      window.location.href = "/home";
     } catch (error: any) {
-      // alert(JSON.stringify(error));
-      // console.log(error)
+      console.log(error);
+
       const { message } = error;
       if (message.toLowerCase().trim() == "network error") {
         alert(
@@ -92,10 +107,11 @@ export const Signin: React.FC = () => {
         return;
       }
 
-      const { data } = error.response;
-      const { errors } = data;
-      const { email } = errors;
-      const { password } = errors;
+      const { data } = error.response || {};
+      const { errors } = data || {};
+      const email = errors?.email ?? [];
+      const password = errors?.password ?? [];
+
       setEmailError(email[0] ?? "");
       setPasswordError(password[0] ?? "");
     } finally {

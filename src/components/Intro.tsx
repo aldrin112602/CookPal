@@ -36,7 +36,7 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
   };
 
   return (
-    <IonContent className="intro-container">
+    <IonContent className="intro-container mx-auto block md:1/3">
       
       <div className="progress-container">
         <div className="progress-bar" style={{ width: `${progress}%` }}></div>

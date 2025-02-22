@@ -10,28 +10,23 @@ import {
   IonSearchbar,
   IonPage,
 } from "@ionic/react";
-import {
-  homeOutline,
-  addOutline,
-  heartOutline,
-} from "ionicons/icons";
-import React, { useRef } from "react";
+import { homeOutline, addOutline, heartOutline } from "ionicons/icons";
+import React, { useEffect, useRef } from "react";
 import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
 import { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
+import { Preferences } from "@capacitor/preferences";
 
 export const Home: React.FC = () => {
- 
-
   const [recipes, setRecipes] = useState([
     {
       id: 3,
       title: "Sinigang na bangus",
       time: "45 min",
       price: "₱181.25",
-      image: 'https://assets.unileversolutions.com/recipes-v2/110716.png',
+      image: "https://assets.unileversolutions.com/recipes-v2/110716.png",
       isFavorite: false,
     },
     {
@@ -39,7 +34,8 @@ export const Home: React.FC = () => {
       title: "Tortang talong",
       time: "25 min",
       price: "₱180 - ₱200",
-      image: 'https://www.pinoyfamilyrecipes.com/wp-content/uploads/2024/05/Tortang-Talong-1.jpg',
+      image:
+        "https://www.pinoyfamilyrecipes.com/wp-content/uploads/2024/05/Tortang-Talong-1.jpg",
       isFavorite: false,
     },
     {
@@ -47,7 +43,8 @@ export const Home: React.FC = () => {
       title: "Filipino Style Pork Adobo",
       time: "45 min",
       price: "₱181.25",
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg',
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg",
       isFavorite: false,
     },
     {
@@ -55,13 +52,20 @@ export const Home: React.FC = () => {
       title: "Fried Chicken",
       time: "25 min",
       price: "₱180 - ₱200",
-      image: 'https://christieathome.com/wp-content/uploads/2020/10/Facetune_06-10-2020-15-37-58-scaled.jpg',
+      image:
+        "https://christieathome.com/wp-content/uploads/2020/10/Facetune_06-10-2020-15-37-58-scaled.jpg",
       isFavorite: false,
     },
   ]);
 
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
   const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    profile: "",
+    username: ""
+  });
 
   const handleSearchInput = (e: any) => {
     const searchTerm = e.target.value.trim().toLowerCase();
@@ -80,6 +84,14 @@ export const Home: React.FC = () => {
     setFilteredRecipes(filteredItems);
   };
 
+  // get user data from Preferences
+  useEffect(() => {
+    (async () => {
+      const user = await Preferences.get({ key: "USER" });
+      setUser(JSON.parse(user.value))
+    })();
+  }, []);
+
   return (
     <IonPage>
       <IonTabs className="md:max-w-1/3 w-full mx-auto bg-white text-black">
@@ -97,7 +109,7 @@ export const Home: React.FC = () => {
                       className="rounded-full border border-slate-400"
                       onClick={() => {
                         // Open profile section
-                        location.assign('/profile')
+                        location.assign("/profile");
                       }}
                     />
                     <div style={{ lineHeight: "20px" }}>
@@ -105,7 +117,12 @@ export const Home: React.FC = () => {
                       <span className="block">johnDoe@gmail.com</span>
                     </div>
                   </div>
-                  <img src={CookPalDesign} alt="CookPal" className="logo" width={'50px'} />
+                  <img
+                    src={CookPalDesign}
+                    alt="CookPal"
+                    className="logo"
+                    width={"50px"}
+                  />
                 </div>
               </IonToolbar>
 
