@@ -113,8 +113,8 @@ export const Home: React.FC = () => {
                       }}
                     />
                     <div style={{ lineHeight: "20px" }}>
-                      <span className="block font-semibold">John Doe</span>
-                      <span className="block">johnDoe@gmail.com</span>
+                      <span className="block font-semibold">{user?.name}</span>
+                      <span className="block">{user?.email}</span>
                     </div>
                   </div>
                   <img
