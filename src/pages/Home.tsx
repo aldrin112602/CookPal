@@ -11,13 +11,17 @@ import {
   IonPage,
 } from "@ionic/react";
 import { homeOutline, addOutline, heartOutline } from "ionicons/icons";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
-import { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 import { Preferences } from "@capacitor/preferences";
+import axios from "axios";
+
+const BASE_URL_API =
+  import.meta.env.VITE_BASE_URL_API ||
+  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Home: React.FC = () => {
   const [recipes, setRecipes] = useState([
@@ -84,15 +88,30 @@ export const Home: React.FC = () => {
     setFilteredRecipes(filteredItems);
   };
 
-  // get user data from Preferences
   useEffect(() => {
-    (async () => {
-      const user = await Preferences.get({ key: "USER" });
-      if (user.value) {
-        setUser(JSON.parse(user.value));
+    const fetchUserData = async () => {
+      try {
+        // Get stored token
+        const tokenData = await Preferences.get({ key: "TOKEN" });
+        const token = tokenData.value;
+
+        if (!token) return;
+
+        const response = await axios.get(`${BASE_URL_API}/user`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setUser(response.data);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
       }
-    })();
+    };
+
+    fetchUserData();
   }, []);
+
 
   return (
     <IonPage>
@@ -105,10 +124,13 @@ export const Home: React.FC = () => {
                   <div className="flex items-center justify-start gap-2">
                     {/* user profile placeholder */}
                     <img
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
+                      src={
+                        user.profile ? `${BASE_URL_API.replace('api', '')}storage/${user.profile}` :
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
+                      }
                       alt="Profile avatar"
                       width={"50px"}
-                      className="rounded-full border border-slate-400"
+                      className="rounded-full border border-slate-400 cursor-pointer"
                       onClick={() => {
                         // Open profile section
                         location.assign("/profile");
