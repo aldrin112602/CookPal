@@ -33,8 +33,7 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import LoadingScreen from "./components/LoadingScreen";
 import React, { Suspense } from "react";
-import { VerifyOTP } from "./pages/auth/VerifyOTP";
-import { ResetPassword } from "./pages/auth/ResetPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy load components
 const Signin = React.lazy(() =>
@@ -42,6 +41,19 @@ const Signin = React.lazy(() =>
     default: module.Signin,
   }))
 );
+
+const ResetPassword = React.lazy(() =>
+  import("./pages/auth/ResetPassword").then((module) => ({
+    default: module.ResetPassword,
+  }))
+);
+
+const VerifyOTP = React.lazy(() =>
+  import("./pages/auth/VerifyOTP").then((module) => ({
+    default: module.VerifyOTP,
+  }))
+);
+
 const Signup = React.lazy(() =>
   import("./pages/auth/Signup").then((module) => ({
     default: module.Signup,
@@ -59,7 +71,6 @@ const Favorites = React.lazy(() =>
     default: module.Favorites,
   }))
 );
-
 
 const FeaturedShowcase = React.lazy(() =>
   import("./pages/FeaturedShowcase").then((module) => ({
@@ -79,8 +90,6 @@ const ForgotPassword = React.lazy(() =>
   }))
 );
 
-
-
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -97,15 +106,13 @@ const App: React.FC = () => (
           <Route path="/signin" exact={true}>
             <Signin />
           </Route>
-          <Route path="/profile" exact={true}>
-            <Profile />
-          </Route>
-          <Route path="/home" exact={true}>
-            <Home />
-          </Route>
-          <Route path="/favorites" exact={true}>
-            <Favorites />
-          </Route>
+          <ProtectedRoute path="/home" exact={true} component={Home} />
+          <ProtectedRoute path="/profile" exact={true} component={Profile} />
+          <ProtectedRoute
+            path="/favorites"
+            exact={true}
+            component={Favorites}
+          />
           <Route path="/forgot_password" exact={true}>
             <ForgotPassword />
           </Route>

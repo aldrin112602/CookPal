@@ -19,6 +19,7 @@ import {
 import { Preferences } from "@capacitor/preferences";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 interface UserProfile {
   name: string;
@@ -36,6 +37,7 @@ export const Profile = () => {
   const [present, dismiss] = useIonLoading();
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessAlert, SetShowSuccessAlert] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const profilePlaceholder = useRef<HTMLImageElement>(null);
   const [formData, setFormData] = useState<UserProfile>({
@@ -46,6 +48,7 @@ export const Profile = () => {
   });
 
   const [token, setToken] = useState<string | undefined>(undefined);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchTokenAndData = async () => {
@@ -53,31 +56,30 @@ export const Profile = () => {
     };
     fetchTokenAndData();
   }, []);
-  
+
   useEffect(() => {
     if (token) {
       loadUserData();
     }
   }, [token]);
-  
+
   const loadUserData = async () => {
     try {
       if (!token) return;
-  
+
       const response = await axios.get(`${BASE_URL_API}/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
-  
+
       setFormData(response.data);
     } catch (error) {
       console.error("Failed to fetch user data:", error);
       setShowAlert(true);
     }
   };
-  
 
   // load token
   const loadToken = async () => {
@@ -99,29 +101,34 @@ export const Profile = () => {
     }));
   };
 
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     try {
       const file = event.target.files?.[0];
       if (!file) return;
-  
+
       await present("Uploading, please wait...");
-  
+
       const formData = new FormData();
       formData.append("photo", file);
-  
-      const response = await axios.post(`${BASE_URL_API}/user/update_profile`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-        },
-        timeout: 10000,
-      });
-  
+
+      const response = await axios.post(
+        `${BASE_URL_API}/user/update_profile`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+          timeout: 10000,
+        }
+      );
+
       setSuccessMessage(response.data.message);
       SetShowSuccessAlert(true);
-  
+
       await loadUserData();
     } catch (error) {
       console.error("Error uploading profile:", error);
@@ -131,7 +138,6 @@ export const Profile = () => {
       event.target.value = "";
     }
   };
-  
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -150,6 +156,11 @@ export const Profile = () => {
     } finally {
       await dismiss();
     }
+  };
+
+  const handleLogout = async () => {
+    await Preferences.remove({ key: "USER" });
+    history.push("/signin"); // Redirect to sign-in after logout
   };
 
   return (
@@ -179,8 +190,11 @@ export const Profile = () => {
               <img
                 ref={profilePlaceholder}
                 src={
-                  formData.profile ? `${BASE_URL_API.replace('api', '')}storage/${formData.profile}` :
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
+                  formData.profile
+                    ? `${BASE_URL_API.replace("api", "")}storage/${
+                        formData.profile
+                      }`
+                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
                 }
                 className="mb-3 object-cover border rounded-full border-yellow-500 bg-white"
                 style={{
@@ -316,6 +330,7 @@ export const Profile = () => {
             </div>
             <div className="grid border-t mt-4 border-slate-200">
               <button
+               onClick={() => setShowConfirm(true)}
                 type="button"
                 className="flex mt-3 bg-black items-center justify-center gap-2"
                 style={{
@@ -325,12 +340,13 @@ export const Profile = () => {
                 }}
               >
                 <IonIcon icon={logOutOutline} />
-                Sign Out
+                Log Out
               </button>
             </div>
           </form>
         </main>
 
+        {/* Error alert */}
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={() => setShowAlert(false)}
@@ -339,13 +355,32 @@ export const Profile = () => {
           buttons={["OK"]}
         />
 
-        {/* Ssuccess alert */}
+        {/* Success alert */}
         <IonAlert
           isOpen={showSuccessAlert}
           onDidDismiss={() => SetShowSuccessAlert(false)}
           header="Success"
           message={successMessage}
           buttons={["OK"]}
+        />
+
+        {/* Confirmation logout */}
+        <IonAlert
+          isOpen={showConfirm}
+          onDidDismiss={() => setShowConfirm(false)}
+          header={"Confirm Logout"}
+          message={"Are you sure you want to logout?"}
+          buttons={[
+            {
+              text: "Cancel",
+              role: "cancel",
+              handler: () => setShowConfirm(false),
+            },
+            {
+              text: "Logout",
+              handler: handleLogout,
+            },
+          ]}
         />
       </IonContent>
     </IonPage>

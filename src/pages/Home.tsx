@@ -182,7 +182,7 @@ export const Home: React.FC = () => {
                 {filteredRecipes.length ? (
                   filteredRecipes.map((recipe, index) => (
                     <RecipeCard
-                      key={recipe.id}
+                      key={index}
                       recipe={recipe}
                       recipes={recipes}
                       setFilteredRecipes={setFilteredRecipes}

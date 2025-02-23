@@ -17,6 +17,8 @@ import Intro from "../../components/Intro";
 import Logo2 from "../../assets/images/logo2.webp";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
+import { useHistory } from "react-router-dom";
+
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
@@ -32,6 +34,8 @@ export const Signin: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
+  const history = useHistory();
+
 
   useEffect(() => {
     (async () => {
@@ -89,8 +93,12 @@ export const Signin: React.FC = () => {
       // get data
       const { data } = response;
       const { token } = data;
+
+      console.log(data)
       await setToken(token);
-      window.location.href = "/home";
+
+      // Redirect user to home page
+      history.push("/home");
     } catch (error: any) {
       console.log(error);
 
