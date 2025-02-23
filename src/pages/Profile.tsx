@@ -34,6 +34,8 @@ export const Profile = () => {
   const [toggleEdit, setToggleEdit] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [present, dismiss] = useIonLoading();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessAlert, SetShowSuccessAlert] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const profilePlaceholder = useRef<HTMLImageElement>(null);
   const [formData, setFormData] = useState<UserProfile>({
@@ -46,23 +48,36 @@ export const Profile = () => {
   const [token, setToken] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    loadUserData();
-    loadToken();
+    const fetchTokenAndData = async () => {
+      await loadToken();
+    };
+    fetchTokenAndData();
   }, []);
-
-  // load user data
+  
+  useEffect(() => {
+    if (token) {
+      loadUserData();
+    }
+  }, [token]);
+  
   const loadUserData = async () => {
     try {
-      const userData = await Preferences.get({ key: "USER" });
-      if (userData.value) {
-        const parsedUser = JSON.parse(userData.value);
-        setFormData(parsedUser);
-      }
+      if (!token) return;
+  
+      const response = await axios.get(`${BASE_URL_API}/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+  
+      setFormData(response.data);
     } catch (error) {
-      console.error("Failed to load user data:", error);
+      console.error("Failed to fetch user data:", error);
       setShowAlert(true);
     }
   };
+  
 
   // load token
   const loadToken = async () => {
@@ -85,69 +100,38 @@ export const Profile = () => {
   };
 
 
-  // Handle upload profile picture
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = event.target.files?.[0];
       if (!file) return;
-
+  
       await present("Uploading, please wait...");
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onload = async (ev) => {
-        if (
-          typeof ev.target?.result === "string" &&
-          profilePlaceholder.current
-        ) {
-          profilePlaceholder.current.src = ev.target.result;
-
-          try {
-            const formData = new FormData();
-            formData.append("file", file);
-
-            const response = await axios.post(
-              `${BASE_URL_API}/api/update_profile`,
-              formData,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "multipart/form-data",
-                  Accept: "application/json",
-                  "Access-Control-Allow-Origin": "*",
-                },
-                withCredentials: false,
-                timeout: 10000,
-              }
-            );
-
-
-
-            console.log(response)
-
-            
-            // setFormData((prev) => ({
-            //   ...prev,
-            //   profile: response.data.profile_url,
-            // }));
-          } catch (error) {
-            console.error("Error uploading profile:", error);
-            setShowAlert(true);
-          }
-        }
-      };
+  
+      const formData = new FormData();
+      formData.append("photo", file);
+  
+      const response = await axios.post(`${BASE_URL_API}/user/update_profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+        },
+        timeout: 10000,
+      });
+  
+      setSuccessMessage(response.data.message);
+      SetShowSuccessAlert(true);
+  
+      await loadUserData();
     } catch (error) {
-      console.error("Error handling file:", error);
+      console.error("Error uploading profile:", error);
       setShowAlert(true);
     } finally {
       await dismiss();
-      // Reset file input
       event.target.value = "";
     }
   };
+  
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -175,7 +159,6 @@ export const Profile = () => {
           <div className="flex items-center justify-between px-4 py-2">
             <IonButtons slot="start">
               <IonBackButton defaultHref="/" />
-              <span className="font-semibold">Back</span>
             </IonButtons>
             <div>
               <img
@@ -196,10 +179,10 @@ export const Profile = () => {
               <img
                 ref={profilePlaceholder}
                 src={
-                  formData.profile ??
+                  formData.profile ? `${BASE_URL_API.replace('api', '')}storage/${formData.profile}` :
                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
                 }
-                className="mb-3 object-cover border rounded-full border-yellow-500 cursor-pointer bg-white"
+                className="mb-3 object-cover border rounded-full border-yellow-500 bg-white"
                 style={{
                   height: "90px",
                   width: "90px",
@@ -214,7 +197,7 @@ export const Profile = () => {
               />
               <div
                 style={{ marginTop: "-40px", marginLeft: "-60px" }}
-                className="border border-slate-200 bg-yellow-500 rounded-full flex p-1"
+                className="border border-slate-200 bg-yellow-500 rounded-full flex p-1 cursor-pointer"
               >
                 <IonIcon
                   style={{ fontSize: "20px" }}
@@ -353,6 +336,15 @@ export const Profile = () => {
           onDidDismiss={() => setShowAlert(false)}
           header="Error"
           message="An error occurred. Please try again."
+          buttons={["OK"]}
+        />
+
+        {/* Ssuccess alert */}
+        <IonAlert
+          isOpen={showSuccessAlert}
+          onDidDismiss={() => SetShowSuccessAlert(false)}
+          header="Success"
+          message={successMessage}
           buttons={["OK"]}
         />
       </IonContent>

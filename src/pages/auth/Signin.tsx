@@ -52,15 +52,10 @@ export const Signin: React.FC = () => {
   };
 
   // set token and user data
-  const setTokenAndUserData = async (token: string, user: any) => {
+  const setToken = async (token: string) => {
     await Preferences.set({
       key: "TOKEN",
       value: token,
-    });
-
-    await Preferences.set({
-      key: "USER",
-      value: JSON.stringify(user),
     });
   };
 
@@ -93,8 +88,8 @@ export const Signin: React.FC = () => {
 
       // get data
       const { data } = response;
-      const { token, user } = data;
-      await setTokenAndUserData(token, user);
+      const { token } = data;
+      await setToken(token);
       window.location.href = "/home";
     } catch (error: any) {
       console.log(error);
