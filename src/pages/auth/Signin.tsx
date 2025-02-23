@@ -37,6 +37,22 @@ export const Signin: React.FC = () => {
   const history = useHistory();
 
 
+  // Check if user is authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await Preferences.get({ key: "TOKEN" });
+      if(!!user.value) {
+        // user redirect back to home
+        history.push("/home");
+      }
+    };
+
+    checkAuth();
+
+  }, []);
+
+
+
   useEffect(() => {
     (async () => {
       const seen = await Preferences.get({ key: INTRO_KEY });
