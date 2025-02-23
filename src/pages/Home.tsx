@@ -64,7 +64,7 @@ export const Home: React.FC = () => {
     name: "",
     email: "",
     profile: "",
-    username: ""
+    username: "",
   });
 
   const handleSearchInput = (e: any) => {
@@ -88,7 +88,9 @@ export const Home: React.FC = () => {
   useEffect(() => {
     (async () => {
       const user = await Preferences.get({ key: "USER" });
-      setUser(JSON.parse(user.value))
+      if (user.value) {
+        setUser(JSON.parse(user.value));
+      }
     })();
   }, []);
 

@@ -56,7 +56,7 @@ const LoadingScreen: React.FC = () => {
         `}
       </style>
 
-      <div className="loading-content">
+      <div className="loading-content mx-auto md:w-1/3">
         <img loading="lazy"  src={Logo} alt="Logo" className="logo" />
         <div className="spinner"></div>
         <div className="loading-text">Loading...</div>
