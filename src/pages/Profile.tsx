@@ -20,6 +20,9 @@ import {
 import { Preferences } from "@capacitor/preferences";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
+import useFetchUser from "../hooks/useFetchUser";
+
 
 interface UserProfile {
   name: string;
@@ -33,6 +36,7 @@ const BASE_URL_API =
 
 export const Profile = () => {
   useAuthGuard(!1, '/signin');
+  const { user } = useFetchUser();
   const [toggleEdit, setToggleEdit] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [present, dismiss] = useIonLoading();
@@ -48,38 +52,22 @@ export const Profile = () => {
     username: "",
   });
 
+
+  useEffect(() => {
+    if (user) {
+      setFormData(user);
+    }
+  }, [user]);
+
   const [token, setToken] = useState<string | undefined>(undefined);
- 
+  const history = useHistory();
+
   useEffect(() => {
     const fetchTokenAndData = async () => {
       await loadToken();
     };
     fetchTokenAndData();
   }, []);
-
-  useEffect(() => {
-    if (token) {
-      loadUserData();
-    }
-  }, [token]);
-
-  const loadUserData = async () => {
-    try {
-      if (!token) return;
-
-      const response = await axios.get(`${BASE_URL_API}/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      setFormData(response.data);
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-      setShowAlert(true);
-    }
-  };
 
   // load token
   const loadToken = async () => {
@@ -125,11 +113,9 @@ export const Profile = () => {
           timeout: 10000,
         }
       );
-
-      setSuccessMessage(response.data.message);
+      const { message, profile_url } = response.data
+      setSuccessMessage(message);
       SetShowSuccessAlert(true);
-
-      await loadUserData();
     } catch (error) {
       console.error("Error uploading profile:", error);
       setShowAlert(true);
@@ -160,9 +146,9 @@ export const Profile = () => {
 
   const handleLogout = async () => {
     await Preferences.remove({ key: "TOKEN" });
-    setSuccessMessage("You have been logged out.");
-    SetShowSuccessAlert(true);
-    // history.push("/signin");
+    await setSuccessMessage("You have been logged out.");
+    await SetShowSuccessAlert(true);
+    history.push("/signin");
   };
 
   return (

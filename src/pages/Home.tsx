@@ -9,6 +9,7 @@ import {
   IonIcon,
   IonSearchbar,
   IonPage,
+  useIonLoading,
 } from "@ionic/react";
 import { homeOutline, addOutline, heartOutline } from "ionicons/icons";
 import React, { useEffect, useRef, useState } from "react";
@@ -19,14 +20,20 @@ import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import useAuthGuard from "../hooks/useAuthGuard";
+import useFetchUser from "../hooks/useFetchUser";
 
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Home: React.FC = () => {
-  useAuthGuard(!1, '/signin');
+  useAuthGuard(!1, "/signin");
+  const { user } = useFetchUser();
+
   
+  
+  
+
   const [recipes, setRecipes] = useState([
     {
       id: 3,
@@ -67,12 +74,6 @@ export const Home: React.FC = () => {
 
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
   const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    profile: "",
-    username: "",
-  });
 
   const handleSearchInput = (e: any) => {
     const searchTerm = e.target.value.trim().toLowerCase();
@@ -91,30 +92,6 @@ export const Home: React.FC = () => {
     setFilteredRecipes(filteredItems);
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // Get stored token
-        const tokenData = await Preferences.get({ key: "TOKEN" });
-        const token = tokenData.value;
-
-        if (!token) return;
-
-        const response = await axios.get(`${BASE_URL_API}/user`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setUser(response.data);
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
   return (
     <IonPage>
       <IonTabs className="md:max-w-1/3 w-full mx-auto bg-white text-black">
@@ -127,21 +104,27 @@ export const Home: React.FC = () => {
                     {/* user profile placeholder */}
                     <img
                       src={
-                        user.profile ? `${BASE_URL_API.replace('api', '')}storage/${user.profile}` :
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
+                        user && user.profile
+                          ? `${BASE_URL_API.replace("api", "")}storage/${
+                              user.profile
+                            }`
+                          : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
                       }
                       alt="Profile avatar"
-                     style={{ width: "50px", height: "50px" }}
+                      style={{ width: "50px", height: "50px" }}
                       className="rounded-full border border-slate-400 cursor-pointer object-cover"
                       onClick={() => {
                         // Open profile section
                         location.assign("/profile");
                       }}
                     />
-                    <div style={{ lineHeight: "20px" }}>
-                      <span className="block font-semibold">{user?.name}</span>
-                      <span className="block">{user?.email}</span>
-                    </div>
+                    {/* User Info */}
+                    {user && (
+                      <div style={{ lineHeight: "20px" }}>
+                        <span className="block font-semibold">{user.name}</span>
+                        <span className="block">{user.email}</span>
+                      </div>
+                    )}
                   </div>
                   <img
                     src={CookPalDesign}
