@@ -10,6 +10,8 @@ const useAuthGuard = (isAuth: boolean, redirect: string) => {
       const user = await Preferences.get({ key: "TOKEN" });
 
       const isUserAuthenticated = !!user.value;
+
+      console.log(isUserAuthenticated)
       if (isUserAuthenticated === isAuth) {
         history.push(redirect);
       }

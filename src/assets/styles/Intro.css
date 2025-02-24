@@ -1,10 +1,6 @@
-.intro-container {
-  --background: #000;
-}
 
 .slide-container {
   height: 100vh;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -49,7 +45,7 @@
 }
 
 .progress-container {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;

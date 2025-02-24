@@ -11,28 +11,35 @@ import {
   IonRouterLink,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { checkmarkDone, eye, eyeOff, logInOutline } from "ionicons/icons";
+import { checkmarkDone, eye, eyeOff } from "ionicons/icons";
 import { Preferences } from "@capacitor/preferences";
 import Intro from "../../components/Intro";
+import Logo2 from "../../assets/images/logo2.webp";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
-import LogoType from "../../assets/images/logotype.webp";
+import { useHistory } from "react-router-dom";
 import useAuthGuard from "../../hooks/useAuthGuard";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
-  import.meta.env.VITE_BASE_URL_API || "http://localhost:8000/api";
+  import.meta.env.VITE_BASE_URL_API ||
+  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Signup: React.FC = () => {
-  useAuthGuard(!0, '/home');
+  useAuthGuard(true, '/home');
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
-  const [user, setUser] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [reqError, setReqError] = useState("");
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
-
+  const history = useHistory();
 
   useEffect(() => {
     (async () => {
@@ -52,30 +59,75 @@ export const Signup: React.FC = () => {
     });
   };
 
+  // set token and user data
+  const setToken = async (token: string) => {
+    await Preferences.set({
+      key: "TOKEN",
+      value: token,
+    });
+  };
+
   const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await present("Signing up...");
 
     try {
-      const response: any = await axios.post(`${BASE_URL_API}/signup`, {
-        user,
-        password,
-      });
+      const response: any = await axios.post(
+        `${BASE_URL_API}/register`,
+        JSON.stringify({ name: fullName, email, username, password }),
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          withCredentials: false,
+          timeout: 10000,
+        }
+      );
+
+      console.log(response)
+
       if (response.data?.error) {
-        setReqError(response.data?.error);
+        alert(response.data?.error);
         return;
       }
-      setReqError("");
+      setFullNameError("");
+      setEmailError("");
+      setUsernameError("");
+      setPasswordError("");
       setIsValid(true);
+
+      // get data
+      const { data } = response;
+      const { token } = data;
+
+      await setToken(token);
+
+      // Redirect user to home page
+      history.push("/home");
     } catch (error: any) {
+      console.log(error);
+
       const { message } = error;
       if (message.toLowerCase().trim() == "network error") {
-        setReqError(
+        alert(
           "It looks like you're offline. Please check your connection and try again."
         );
         return;
       }
-      setReqError(message);
+
+      const { data } = error.response || {};
+      const { errors } = data || {};
+      const name = errors?.name ?? [];
+      const email = errors?.email ?? [];
+      const username = errors?.username ?? [];
+      const password = errors?.password ?? [];
+
+      setFullNameError(name[0] ?? "");
+      setEmailError(email[0] ?? "");
+      setUsernameError(username[0] ?? "");
+      setPasswordError(password[0] ?? "");
     } finally {
       await dismiss();
     }
@@ -133,12 +185,12 @@ export const Signup: React.FC = () => {
                 }
 
                 .welcome-text {
-                  font-size: 50px;
+                  font-size: 65px;
                   font-weight: bold;
                   color: #222;
                   line-height: 85px;
                   letter-spacing: -5%;
-                  text-align: center;
+                  padding-bottom: 2rem;
                 }
 
                 .subtitle {
@@ -151,7 +203,8 @@ export const Signup: React.FC = () => {
 
                 .form-container {
                   padding: 2rem;
-                  padding-bottom: 180px;
+                  padding-bottom: 120px;
+                  margin-top: 5rem;
                   flex: 1;
                   overflow-y: auto;
                   position: relative;
@@ -200,64 +253,107 @@ export const Signup: React.FC = () => {
               `}
               </style>
               <div className="top-section">
-                <h1 className="welcome-text">Welcome to</h1>
-                <img
-                  src={LogoType}
-                  alt="CookPal Logo type"
-                  width="50%"
-                  style={{ display: "block", margin: "0 auto" }}
-                />
-                <br />
+                <div className="logo-circle">
+                  <img loading="lazy" src={Logo2} alt="Logo" width="130" />
+                </div>
+                <h1 className="welcome-text">
+                  Join Us Pal!
+                </h1>
                 <p className="subtitle">Please Sign Up to continue.</p>
               </div>
 
               <div className="form-container">
                 <form onSubmit={handleSignup}>
                   <IonInput
-                    value={user}
+                    value={fullName}
                     label="Full Name"
                     labelPlacement="floating"
                     mode="md"
                     className={`${isValid && "ion-valid"} ${
-                      reqError && "ion-invalid"
-                    } ${reqError && "ion-touched"}`}
+                      fullNameError && "ion-invalid"
+                    } ${fullNameError && "ion-touched"}`}
                     type="text"
                     fill="outline"
                     placeholder="John Doe"
-                    onIonInput={(e) => setUser(e.detail.value!)}
+                    onIonInput={(e) => setFullName(e.detail.value!)}
                   />
+
+                  {fullNameError && (
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
+                        marginTop: "-15px",
+                        marginBottom: "5px",
+                        color: "red",
+                        opacity: "0.8",
+                      }}
+                    >
+                      {fullNameError}
+                    </p>
+                  )}
+
                   <IonInput
-                    value={user}
-                    label="Email Adress"
+                    value={email}
+                    label="Email Address"
                     labelPlacement="floating"
                     mode="md"
                     className={`${isValid && "ion-valid"} ${
-                      reqError && "ion-invalid"
-                    } ${reqError && "ion-touched"}`}
+                      emailError && "ion-invalid"
+                    } ${emailError && "ion-touched"}`}
                     type="email"
                     fill="outline"
                     placeholder="johndoe@example.com"
-                    onIonInput={(e) => setUser(e.detail.value!)}
+                    onIonInput={(e) => setEmail(e.detail.value!)}
                   />
+
+                  {emailError && (
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
+                        marginTop: "-15px",
+                        marginBottom: "5px",
+                        color: "red",
+                        opacity: "0.8",
+                      }}
+                    >
+                      {emailError}
+                    </p>
+                  )}
+
                   <IonInput
-                    value={user}
+                    value={username}
                     label="Username"
                     labelPlacement="floating"
                     mode="md"
                     className={`${isValid && "ion-valid"} ${
-                      reqError && "ion-invalid"
-                    } ${reqError && "ion-touched"}`}
+                      usernameError && "ion-invalid"
+                    } ${usernameError && "ion-touched"}`}
                     type="text"
                     fill="outline"
                     placeholder="Ex: Johndoe_123"
-                    onIonInput={(e) => setUser(e.detail.value!)}
+                    onIonInput={(e) => setUsername(e.detail.value!)}
                   />
+
+                  {usernameError && (
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
+                        marginTop: "-15px",
+                        marginBottom: "5px",
+                        color: "red",
+                        opacity: "0.8",
+                      }}
+                    >
+                      {usernameError}
+                    </p>
+                  )}
+
                   <div style={{ position: "relative" }}>
                     <IonInput
                       mode="md"
                       className={`${isValid && "ion-valid"} ${
-                        reqError && "ion-invalid"
-                      } ${reqError && "ion-touched"}`}
+                        passwordError && "ion-invalid"
+                      } ${passwordError && "ion-touched"}`}
                       type={showPassword ? "text" : "password"}
                       label="Password"
                       labelPlacement="floating"
@@ -265,7 +361,7 @@ export const Signup: React.FC = () => {
                       placeholder="Enter your password"
                       value={password}
                       onIonInput={(e) => setPassword(e.detail.value!)}
-                    ></IonInput>
+                    />
                     <IonIcon
                       color="medium"
                       icon={showPassword ? eyeOff : eye}
@@ -282,17 +378,17 @@ export const Signup: React.FC = () => {
                     />
                   </div>
 
-                  {/* error message */}
-                  {reqError && (
+                  {passwordError && (
                     <p
                       style={{
                         fontSize: "0.9rem",
-                        marginTop: "1rem",
+                        marginTop: "-15px",
+                        marginBottom: "5px",
                         color: "red",
                         opacity: "0.8",
                       }}
                     >
-                      {reqError}
+                      {passwordError}
                     </p>
                   )}
 
@@ -306,9 +402,9 @@ export const Signup: React.FC = () => {
                   </IonButton>
 
                   <p style={{ textAlign: "center" }}>
-                    ALready have an account?{" "}
+                    Already have an account?{" "}
                     <IonRouterLink
-                      href="/"
+                      href="/signin"
                       className="signin-link"
                       style={{
                         cursor: "pointer",

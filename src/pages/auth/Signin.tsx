@@ -27,7 +27,7 @@ const BASE_URL_API =
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Signin: React.FC = () => {
-  useAuthGuard(!0, '/home');
+  useAuthGuard(true, '/home');
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [email, setEmail] = useState("");

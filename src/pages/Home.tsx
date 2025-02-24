@@ -27,12 +27,8 @@ const BASE_URL_API =
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Home: React.FC = () => {
-  useAuthGuard(!1, "/signin");
+  useAuthGuard(false, "/signin");
   const { user } = useFetchUser();
-
-  
-  
-  
 
   const [recipes, setRecipes] = useState([
     {

@@ -36,13 +36,13 @@ const Intro: React.FC<ContainerProps> = ({ onFinish }) => {
   };
 
   return (
-    <IonContent className="intro-container mx-auto block md:1/3">
-      
+    <IonContent className="min-h-screen relative">
+
       <div className="progress-container">
         <div className="progress-bar" style={{ width: `${progress}%` }}></div>
       </div>
 
-      <Swiper onSlideChange={handleSlideChange} className="h-full">
+      <Swiper onSlideChange={handleSlideChange} className="h-full relative md:w-1/3">
         <SwiperSlide>
           <div className="slide-container">
           <img loading="lazy" 

@@ -33,7 +33,6 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import LoadingScreen from "./components/LoadingScreen";
 import React, { Suspense } from "react";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy load components
 const Signin = React.lazy(() =>
@@ -106,13 +105,15 @@ const App: React.FC = () => (
           <Route path="/signin" exact={true}>
             <Signin />
           </Route>
-          <ProtectedRoute path="/home" exact={true} component={Home} />
-          <ProtectedRoute path="/profile" exact={true} component={Profile} />
-          <ProtectedRoute
-            path="/favorites"
-            exact={true}
-            component={Favorites}
-          />
+          <Route path="/home" exact={true}>
+            <Home />
+          </Route>
+          <Route path="/profile" exact={true}>
+            <Profile />
+          </Route>
+          <Route path="/favorites" exact={true}>
+            <Favorites />
+          </Route>
           <Route path="/forgot_password" exact={true}>
             <ForgotPassword />
           </Route>
