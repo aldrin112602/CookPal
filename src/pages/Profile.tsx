@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import useAuthGuard from "../hooks/useAuthGuard";
 import {
   IonHeader,
   IonPage,
@@ -19,7 +20,6 @@ import {
 import { Preferences } from "@capacitor/preferences";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
 
 interface UserProfile {
   name: string;
@@ -32,6 +32,7 @@ const BASE_URL_API =
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Profile = () => {
+  useAuthGuard(!1, '/signin');
   const [toggleEdit, setToggleEdit] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [present, dismiss] = useIonLoading();
@@ -48,8 +49,7 @@ export const Profile = () => {
   });
 
   const [token, setToken] = useState<string | undefined>(undefined);
-  const history = useHistory();
-
+ 
   useEffect(() => {
     const fetchTokenAndData = async () => {
       await loadToken();
@@ -159,8 +159,10 @@ export const Profile = () => {
   };
 
   const handleLogout = async () => {
-    await Preferences.remove({ key: "USER" });
-    history.push("/signin"); // Redirect to sign-in after logout
+    await Preferences.remove({ key: "TOKEN" });
+    setSuccessMessage("You have been logged out.");
+    SetShowSuccessAlert(true);
+    // history.push("/signin");
   };
 
   return (

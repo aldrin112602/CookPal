@@ -18,6 +18,7 @@ import Logo2 from "../../assets/images/logo2.webp";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
 import { useHistory } from "react-router-dom";
+import useAuthGuard from "../../hooks/useAuthGuard";
 
 
 const INTRO_KEY = "intro-seen";
@@ -26,6 +27,7 @@ const BASE_URL_API =
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Signin: React.FC = () => {
+  useAuthGuard(!0, '/home');
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [email, setEmail] = useState("");
@@ -36,20 +38,6 @@ export const Signin: React.FC = () => {
   const [isValid, setIsValid] = useState(false);
   const history = useHistory();
 
-
-  // Check if user is authenticated
-  useEffect(() => {
-    const checkAuth = async () => {
-      const user = await Preferences.get({ key: "TOKEN" });
-      if(!!user.value) {
-        // user redirect back to home
-        history.push("/home");
-      }
-    };
-
-    checkAuth();
-
-  }, []);
 
 
 

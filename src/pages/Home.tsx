@@ -18,12 +18,15 @@ import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
+import useAuthGuard from "../hooks/useAuthGuard";
 
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Home: React.FC = () => {
+  useAuthGuard(!1, '/signin');
+  
   const [recipes, setRecipes] = useState([
     {
       id: 3,
@@ -112,7 +115,6 @@ export const Home: React.FC = () => {
     fetchUserData();
   }, []);
 
-
   return (
     <IonPage>
       <IonTabs className="md:max-w-1/3 w-full mx-auto bg-white text-black">
@@ -129,8 +131,8 @@ export const Home: React.FC = () => {
                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
                       }
                       alt="Profile avatar"
-                      width={"50px"}
-                      className="rounded-full border border-slate-400 cursor-pointer"
+                     style={{ width: "50px", height: "50px" }}
+                      className="rounded-full border border-slate-400 cursor-pointer object-cover"
                       onClick={() => {
                         // Open profile section
                         location.assign("/profile");

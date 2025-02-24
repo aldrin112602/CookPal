@@ -17,12 +17,14 @@ import Intro from "../../components/Intro";
 import axios from "axios";
 import { Keyboard } from "@capacitor/keyboard";
 import LogoType from "../../assets/images/logotype.webp";
+import useAuthGuard from "../../hooks/useAuthGuard";
 
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API || "http://localhost:8000/api";
 
 export const Signup: React.FC = () => {
+  useAuthGuard(!0, '/home');
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [user, setUser] = useState("");
@@ -30,6 +32,7 @@ export const Signup: React.FC = () => {
   const [reqError, setReqError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
+
 
   useEffect(() => {
     (async () => {
@@ -210,7 +213,7 @@ export const Signup: React.FC = () => {
 
               <div className="form-container">
                 <form onSubmit={handleSignup}>
-                <IonInput
+                  <IonInput
                     value={user}
                     label="Full Name"
                     labelPlacement="floating"

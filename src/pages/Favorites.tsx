@@ -21,10 +21,10 @@ import CookPalDesign from "../assets/images/CookPal Design.webp";
 import { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
+import useAuthGuard from "../hooks/useAuthGuard";
 
 export const Favorites: React.FC = () => {
- 
-
+  useAuthGuard(!1, '/signin');
   const [recipes, setRecipes] = useState([
     {
       id: 3,
