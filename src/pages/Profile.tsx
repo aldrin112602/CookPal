@@ -23,19 +23,20 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import useFetchUser from "../hooks/useFetchUser";
 
-
 interface UserProfile {
   name: string;
   email: string;
-  profile: string;
+  profile?: string;
   username: string;
+  password?: string;
+  new_password?: string;
 }
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Profile = () => {
-  useAuthGuard(!1, '/signin');
+  useAuthGuard(!1, "/signin");
   const { user } = useFetchUser();
   const [toggleEdit, setToggleEdit] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -50,12 +51,18 @@ export const Profile = () => {
     email: "",
     profile: "",
     username: "",
+    password: "",
+    new_password: "",
   });
 
-
   useEffect(() => {
-    if (user) {
-      setFormData(user);
+    if (user && Object.keys(user).length > 0) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        profile: user.profile || "",
+        username: user.username || "",
+      });
     }
   }, [user]);
 
@@ -113,7 +120,7 @@ export const Profile = () => {
           timeout: 10000,
         }
       );
-      const { message, profile_url } = response.data
+      const { message, profile_url } = response.data;
       setSuccessMessage(message);
       SetShowSuccessAlert(true);
     } catch (error) {
@@ -129,18 +136,26 @@ export const Profile = () => {
     event.preventDefault();
     try {
       await present("Saving changes...");
-      // TODO: Add your API call here
-      // alert(JSON.stringify(formData))
-      // await Preferences.set({
-      //   key: "USER",
-      //   value: JSON.stringify(formData)
-      // });
-      setToggleEdit(false);
+      const response = await axios.post(
+        `${BASE_URL_API}/user/update_info`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          timeout: 10000,
+        }
+      );
+      const { message } = response.data;
+      setSuccessMessage(message);
+      SetShowSuccessAlert(true);
     } catch (error) {
       console.error("Failed to save changes:", error);
       setShowAlert(true);
     } finally {
       await dismiss();
+      setToggleEdit(false);
     }
   };
 
@@ -296,7 +311,7 @@ export const Profile = () => {
                 style={{ borderRadius: "15px" }}
                 placeholder="New Password"
                 type="password"
-                name="password_confirmation"
+                name="new_password"
                 disabled={!toggleEdit}
                 onChange={handleChange}
               />
@@ -318,7 +333,7 @@ export const Profile = () => {
             </div>
             <div className="grid border-t mt-4 border-slate-200">
               <button
-               onClick={() => setShowConfirm(true)}
+                onClick={() => setShowConfirm(true)}
                 type="button"
                 className="flex mt-3 bg-black items-center justify-center gap-2"
                 style={{
