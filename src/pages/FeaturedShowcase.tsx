@@ -56,7 +56,7 @@ export const FeaturedShowcase: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
-        <div className="p-4 h-screen overflow-y-auto bg-slate-300 mx-auto">
+        <div className="p-4 h-screen overflow-y-auto bg-slate-300 mx-auto md:w-1/3">
           {featuredRoutes.map((item, index) => (
             <IonCard
               key={index}

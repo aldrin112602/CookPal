@@ -46,6 +46,7 @@ export const Profile = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const profilePlaceholder = useRef<HTMLImageElement>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<UserProfile>({
     name: "",
     email: "",
@@ -132,8 +133,19 @@ export const Profile = () => {
     }
   };
 
+
+  const validateForm = () => {
+    let newErrors: Record<string, string> = {};
+    if (!formData.name) newErrors.name = "Full Name is required.";
+    if (!formData.email) newErrors.email = "Email Address is required.";
+    if (!formData.username) newErrors.username = "Username is required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!validateForm()) return;
     try {
       await present("Saving changes...");
       const response = await axios.post(
@@ -150,12 +162,24 @@ export const Profile = () => {
       const { message } = response.data;
       setSuccessMessage(message);
       SetShowSuccessAlert(true);
-    } catch (error) {
+    } catch (error: any) {
+      const { data } = error.response;
+      console.log(data)
+
+      
+        const { new_password, name, email, username, password } = data.errors;
+        setErrors({
+          new_password: new_password ? new_password[0] : "",
+          password: password ? password[0] : "",
+          name: name ? name[0] : "",
+          email: email ? email[0] : "",
+          username: username ? username[0] : "",
+        });
       console.error("Failed to save changes:", error);
-      setShowAlert(true);
+      // setShowAlert(true);
     } finally {
       await dismiss();
-      setToggleEdit(false);
+      // setToggleEdit(false);
     }
   };
 
@@ -257,6 +281,7 @@ export const Profile = () => {
                 disabled={!toggleEdit}
                 autoFocus
               />
+              {errors.name && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.name}</p>}
             </div>
 
             <div className="mt-3">
@@ -272,6 +297,7 @@ export const Profile = () => {
                 onChange={handleChange}
                 disabled={!toggleEdit}
               />
+              {errors.email && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.email}</p>}
             </div>
 
             <div className="mt-3">
@@ -287,6 +313,7 @@ export const Profile = () => {
                 onChange={handleChange}
                 disabled={!toggleEdit}
               />
+              {errors.username && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.username}</p>}
             </div>
 
             <div className="mt-3">
@@ -301,6 +328,7 @@ export const Profile = () => {
                 disabled={!toggleEdit}
                 onChange={handleChange}
               />
+              {errors.password && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.password}</p>}
             </div>
 
             <div className="mt-3">
@@ -315,6 +343,7 @@ export const Profile = () => {
                 disabled={!toggleEdit}
                 onChange={handleChange}
               />
+              {errors.new_password && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.new_password}</p>}
             </div>
 
             <div className="grid">
