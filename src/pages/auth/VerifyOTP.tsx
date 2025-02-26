@@ -90,7 +90,7 @@ export const VerifyOTP: React.FC = () => {
                     key={i}
                     type="button"
                     style={{ borderRadius: "5px", fontSize: "1.2rem" }}
-                    className="bg-slate-300 h-8 w-25"
+                    className="bg-slate-300 h-8 w-full"
                     onClick={() => handleKeyPress((i + 1).toString())}
                   >
                     {i + 1}
@@ -99,7 +99,7 @@ export const VerifyOTP: React.FC = () => {
                 <button
                   type="button"
                   style={{ borderRadius: "5px", fontSize: "1.2rem" }}
-                  className="bg-slate-300 h-8"
+                  className="bg-slate-300 h-8 w-full"
                   onClick={() => handleKeyPress("0")}
                 >
                   0
@@ -107,7 +107,7 @@ export const VerifyOTP: React.FC = () => {
                 <button
                   type="button"
                   style={{ borderRadius: "5px", fontSize: "1.2rem" }}
-                  className="bg-rose-900 h-8 flex items-center justify-center gap-2 text-white"
+                  className="bg-rose-900 h-8 w-full flex items-center justify-center gap-2 text-white"
                   onClick={() => handleKeyPress("del")}
                 >
                   Delete
@@ -120,7 +120,7 @@ export const VerifyOTP: React.FC = () => {
                     fontSize: "1.2rem",
                     background: "#EFD959",
                   }}
-                  className="h-8 flex items-center justify-center gap-2"
+                  className="h-8 w-full flex items-center justify-center gap-2"
                 >
                   Submit
                 </button>

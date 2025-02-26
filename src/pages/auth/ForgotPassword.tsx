@@ -3,7 +3,9 @@ import Image1 from "../../assets/images/image 1.webp";
 import Logo from "../../assets/images/logo2.webp";
 import axios from "axios";
 import { useState } from "react";
-
+import { useHistory } from "react-router-dom";
+import useAuthGuard from "../../hooks/useAuthGuard";
+import { Preferences } from "@capacitor/preferences";
 
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
@@ -11,13 +13,24 @@ const BASE_URL_API =
 
   
 export const ForgotPassword: React.FC = () => {
+  useAuthGuard(true, '/home');
   const [present, dismiss] = useIonLoading();
   const [email, setEmail] = useState("");
-  
+  const history = useHistory();
+
+
+  // set otp
+  const setToken = async (otp: string) => {
+    await Preferences.set({
+      key: "OTP",
+      value: otp,
+    });
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO: call api
-    await present("Loading, Please wait..");
+    await present("We're working..");
     try {
       const response: any = await axios.post(
         `${BASE_URL_API}/password_reset_otp`,
@@ -31,6 +44,11 @@ export const ForgotPassword: React.FC = () => {
           timeout: 10000 * 3,
         }
       );
+
+      const { otp } = response.data;
+      await setToken(String(otp));
+      history.push("/verify_otp");
+
     } catch (error) {
       console.error(error);
     } finally {
