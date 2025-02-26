@@ -79,7 +79,6 @@ export const Signin: React.FC = () => {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
           },
           withCredentials: false,
           timeout: 10000,

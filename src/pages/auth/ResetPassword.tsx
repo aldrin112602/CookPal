@@ -1,14 +1,40 @@
 import { IonPage, IonContent, IonInput, IonButton } from "@ionic/react";
 import Image1 from "../../assets/images/image 3.webp";
 import Logo from "../../assets/images/logo2.webp";
+import { useState } from "react";
+import axios from "axios";
+
+const BASE_URL_API =
+  import.meta.env.VITE_BASE_URL_API ||
+  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const ResetPassword: React.FC = () => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO: call api
+    try {
+      const response: any = await axios.post(
+        `${BASE_URL_API}/reset_password`,
+        JSON.stringify({ password, confirmPassword }),
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          withCredentials: false,
+          timeout: 10000,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
-    <IonPage>
+    <IonPage className="mx-auto md:w-1/3">
       <IonContent scrollY={true}>
         <div className="bg-black">
           <img

@@ -1,14 +1,44 @@
-import { IonPage, IonContent, IonInput, IonButton } from "@ionic/react";
+import { IonPage, IonContent, IonInput, IonButton, useIonLoading } from "@ionic/react";
 import Image1 from "../../assets/images/image 1.webp";
 import Logo from "../../assets/images/logo2.webp";
+import axios from "axios";
+import { useState } from "react";
 
+
+const BASE_URL_API =
+  import.meta.env.VITE_BASE_URL_API ||
+  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
+
+  
 export const ForgotPassword: React.FC = () => {
+  const [present, dismiss] = useIonLoading();
+  const [email, setEmail] = useState("");
+  
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO: call api
+    await present("Loading, Please wait..");
+    try {
+      const response: any = await axios.post(
+        `${BASE_URL_API}/password_reset_otp`,
+        JSON.stringify({ email }),
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          withCredentials: false,
+          timeout: 10000 * 3,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dismiss();
+    }
   };
   return (
-    <IonPage>
+    <IonPage className="mx-auto md:w-1/3">
       <IonContent scrollY={true}>
         <div className="bg-black">
           <img
@@ -54,6 +84,7 @@ export const ForgotPassword: React.FC = () => {
                   Email Address
                 </label>
                 <input
+                onInput={e => setEmail((e.target as HTMLInputElement).value)}
                   className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
                   style={{ borderRadius: "15px" }}
                   placeholder="johndoe@example.com"

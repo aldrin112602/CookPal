@@ -25,7 +25,7 @@ export const VerifyOTP: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage className="mx-auto md:w-1/3">
       <IonContent scrollY={true}>
         <div className="bg-black">
           <img
