@@ -19,18 +19,23 @@ export const ForgotPassword: React.FC = () => {
   const history = useHistory();
 
 
-  // set otp
-  const setToken = async (otp: string) => {
+  // set otp and expiration to preferences
+  const setOtpAndExpiration = async (otp: string, expires_at: string) => {
     await Preferences.set({
       key: "OTP",
       value: otp,
+    });
+
+    await Preferences.set({
+      key: "OTP_EXPIRATION",
+      value: expires_at,
     });
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO: call api
-    await present("We're working..");
+    await present("We're working, please wait..");
     try {
       const response: any = await axios.post(
         `${BASE_URL_API}/password_reset_otp`,
@@ -45,8 +50,8 @@ export const ForgotPassword: React.FC = () => {
         }
       );
 
-      const { otp } = response.data;
-      await setToken(String(otp));
+      const { otp, expires_at } = response.data;
+      await setOtpAndExpiration(String(otp), String(expires_at));
       history.push("/verify_otp");
 
     } catch (error) {

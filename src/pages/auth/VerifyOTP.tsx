@@ -1,11 +1,27 @@
-import { IonPage, IonContent, IonInput, IonIcon } from "@ionic/react";
-import { useState } from "react";
+import {
+  IonPage,
+  IonContent,
+  IonInput,
+  IonIcon,
+  IonModal,
+  IonButton,
+  IonAlert,
+} from "@ionic/react";
+import { useEffect, useState } from "react";
 import Image2 from "../../assets/images/image 2.webp";
 import Logo from "../../assets/images/logo2.webp";
-import { sendOutline, trashBinOutline } from "ionicons/icons";
+import useAuthGuard from "../../hooks/useAuthGuard";
+import { Preferences } from "@capacitor/preferences";
+import { useHistory } from "react-router-dom";
 
 export const VerifyOTP: React.FC = () => {
+  useAuthGuard(true, "/home");
+  const history = useHistory();
   const [otp, setOtp] = useState<string>("");
+  const [otpExpiration, setOtpExpiration] = useState<string>("");
+  const [realOtp, setRealOtp] = useState<string>("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleKeyPress = (value: string) => {
     if ("vibrate" in window.navigator) {
@@ -17,11 +33,38 @@ export const VerifyOTP: React.FC = () => {
       setOtp((prev) => prev + value);
     }
   };
+  //  get otp and expiration from preferences
+  const getOtpAndExpiration = async () => {
+    const getOtp = await Preferences.get({
+      key: "OTP",
+    });
+    const getOtpExp = await Preferences.get({
+      key: "OTP_EXPIRATION",
+    });
+
+    await setOtpExpiration(getOtpExp.value || "");
+    await setRealOtp(getOtp.value || "");
+
+    if (!getOtp.value || !getOtpExp.value) {
+      // redirect back to sign in page
+      history.push("/signin");
+    }
+  };
+
+  useEffect(() => {
+    getOtpAndExpiration();
+  }, [otpExpiration, realOtp]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO: call API
-    alert(otp);
+    if(!otp) return;
+    if (otp == realOtp) {
+      setAlertMessage("OTP verified successfully!");
+      history.push("/reset_password");
+    } else {
+      setAlertMessage("OTP is incorrect, please try again!");
+    }
+    setAlertOpen(true);
   };
 
   return (
@@ -135,6 +178,14 @@ export const VerifyOTP: React.FC = () => {
             </div>
           </form>
         </div>
+        {/* Alert for success or error messages */}
+        <IonAlert
+          isOpen={alertOpen}
+          onDidDismiss={() => setAlertOpen(false)}
+          header="OTP Verification"
+          message={alertMessage}
+          buttons={["OK"]}
+        />
       </IonContent>
     </IonPage>
   );

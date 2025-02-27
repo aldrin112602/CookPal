@@ -3,12 +3,14 @@ import Image1 from "../../assets/images/image 3.webp";
 import Logo from "../../assets/images/logo2.webp";
 import { useState } from "react";
 import axios from "axios";
+import useAuthGuard from "../../hooks/useAuthGuard";
 
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const ResetPassword: React.FC = () => {
+  useAuthGuard(true, "/home");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -80,6 +82,10 @@ export const ResetPassword: React.FC = () => {
                   New Password
                 </label>
                 <input
+                  value={password}
+                  onInput={(e: React.FormEvent<HTMLInputElement>) =>
+                    setPassword((e.target as HTMLInputElement).value)
+                  }
                   className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
                   style={{ borderRadius: "15px" }}
                   type="password"
@@ -94,6 +100,10 @@ export const ResetPassword: React.FC = () => {
                   Confirm Password
                 </label>
                 <input
+                  value={confirmPassword}
+                  onInput={(e: React.FormEvent<HTMLInputElement>) =>
+                    setConfirmPassword((e.target as HTMLInputElement).value)
+                  }
                   className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
                   style={{ borderRadius: "15px" }}
                   type="password"
