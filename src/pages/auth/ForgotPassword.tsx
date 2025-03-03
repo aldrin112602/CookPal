@@ -84,6 +84,8 @@ export const ForgotPassword: React.FC = () => {
       history.push("/verify_otp");
     } catch (error: any) {
       const { errors } = error?.response.data;
+
+      console.log(error)
       setResponseError(errors?.email?.[0] || "Something went wrong. Please try again.");
     } finally {
       dismiss();

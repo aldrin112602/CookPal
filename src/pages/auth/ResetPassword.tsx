@@ -1,4 +1,10 @@
-import { IonPage, IonContent, IonInput, IonButton } from "@ionic/react";
+import {
+  IonPage,
+  IonContent,
+  IonInput,
+  IonButton,
+  IonAlert,
+} from "@ionic/react";
 import Image1 from "../../assets/images/image 3.webp";
 import Logo from "../../assets/images/logo2.webp";
 import { useEffect, useState } from "react";
@@ -6,7 +12,6 @@ import axios from "axios";
 import useAuthGuard from "../../hooks/useAuthGuard";
 import { Preferences } from "@capacitor/preferences";
 import { useHistory } from "react-router-dom";
-
 
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
@@ -17,17 +22,46 @@ export const ResetPassword: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const history = useHistory();
+  const [email, setEmail] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
+  const clearData = async () => {
+    await Preferences.remove({ key: "VERIFIED" });
+    await Preferences.remove({ key: "EMAIL" });
+  };
 
+  const handleBack = async () => {
+    await presentAlert({
+      header: "Confirm",
+      message: "Are you sure you want to cancel?",
+      buttons: [
+        { text: "Cancel", role: "cancel" },
+        {
+          text: "Yes",
+          handler: async () => {
+            console.log("Clearing data..."); // Debugging step
+            await clearData();
+            console.log("Data cleared!"); // Confirm execution
+            history.push("/signin");
+          },
+        },
+      ],
+    });
+  };
+  
 
   useEffect(() => {
     (async () => {
       const isVerified = await Preferences.get({ key: "VERIFIED" });
-      if(!(isVerified.value && isVerified.value == 'true')) {
-        history.push('/signin')
+      const getMail = await Preferences.get({ key: "EMAIL" });
+      if (getMail.value) setEmail(getMail.value);
+
+      if (!isVerified.value || isVerified.value != "true") {
+        history.push("/signin");
       }
     })();
-
   }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -35,8 +69,12 @@ export const ResetPassword: React.FC = () => {
     // TODO: call api
     try {
       const response: any = await axios.post(
-        `${BASE_URL_API}/reset_password`,
-        JSON.stringify({ password, confirmPassword }),
+        `${BASE_URL_API}/password_reset`,
+        JSON.stringify({
+          password,
+          password_confirmation: confirmPassword,
+          email,
+        }),
         {
           headers: {
             Accept: "application/json",
@@ -46,9 +84,17 @@ export const ResetPassword: React.FC = () => {
           timeout: 10000,
         }
       );
+      setPasswordError("");
+      setAlertMessage(response.data.message);
+      setAlertOpen(true);
+      await clearData();
       console.log(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      const { data } = error.response || {};
+      const { errors } = data || {};
+      const password = errors?.password ?? [];
+      setPasswordError(password[0] ?? "");
     }
   };
   return (
@@ -106,9 +152,20 @@ export const ResetPassword: React.FC = () => {
                   style={{ borderRadius: "15px" }}
                   type="password"
                   name="password"
-                  required
                   autoFocus
                 />
+
+                {passwordError && (
+                  <p
+                    style={{
+                      fontSize: "0.9rem",
+                      color: "red",
+                      opacity: "0.8",
+                    }}
+                  >
+                    {passwordError}
+                  </p>
+                )}
               </div>
 
               <div className="my-3">
@@ -124,7 +181,6 @@ export const ResetPassword: React.FC = () => {
                   style={{ borderRadius: "15px" }}
                   type="password"
                   name="confirm_password"
-                  required
                   autoFocus
                 />
               </div>
@@ -138,6 +194,7 @@ export const ResetPassword: React.FC = () => {
                     width: "calc(100% / 2.1)",
                     borderRadius: "15px",
                   }}
+                  onClick={() => handleBack}
                 >
                   Cancel
                 </button>
@@ -156,7 +213,26 @@ export const ResetPassword: React.FC = () => {
             </div>
           </form>
         </div>
+
+        {/* Alert for success or error messages */}
+        <IonAlert
+          isOpen={alertOpen}
+          onDidDismiss={() => setAlertOpen(false)}
+          header="Reset Password"
+          message={alertMessage}
+          buttons={["OK"]}
+        />
       </IonContent>
     </IonPage>
   );
 };
+function presentAlert(arg0: {
+  header: string;
+  message: string;
+  buttons: (
+    | { text: string; role: string }
+    | { text: string; handler: () => Promise<void> }
+  )[];
+}) {
+  throw new Error("Function not implemented.");
+}

@@ -105,7 +105,6 @@ export const VerifyOTP: React.FC = () => {
   const clearOtpData = async () => {
     await Preferences.remove({ key: "OTP" });
     await Preferences.remove({ key: "OTP_EXPIRATION" });
-    await Preferences.remove({ key: "EMAIL" });
   };
 
   const handleBack = async (event: React.MouseEvent) => {
