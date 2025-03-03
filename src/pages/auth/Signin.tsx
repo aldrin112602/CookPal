@@ -20,14 +20,13 @@ import { Keyboard } from "@capacitor/keyboard";
 import { useHistory } from "react-router-dom";
 import useAuthGuard from "../../hooks/useAuthGuard";
 
-
 const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
 export const Signin: React.FC = () => {
-  useAuthGuard(true, '/home');
+  useAuthGuard(true, "/home");
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [email, setEmail] = useState("");
@@ -37,9 +36,6 @@ export const Signin: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const history = useHistory();
-
-
-
 
   useEffect(() => {
     (async () => {
@@ -97,7 +93,7 @@ export const Signin: React.FC = () => {
       const { data } = response;
       const { token } = data;
 
-      console.log(data)
+      console.log(data);
       await setToken(token);
 
       // Redirect user to home page
@@ -330,6 +326,20 @@ export const Signin: React.FC = () => {
                       {passwordError}
                     </p>
                   )}
+
+                  <p style={{ textAlign: "right" }}>
+                    <IonRouterLink
+                      href="/forgot_password"
+                      className="signup-link"
+                      style={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        display: "inline-block",
+                      }}
+                    >
+                      Forgot Password?
+                    </IonRouterLink>
+                  </p>
 
                   <IonButton
                     expand="block"

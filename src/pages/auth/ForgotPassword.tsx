@@ -1,8 +1,14 @@
-import { IonPage, IonContent, IonInput, IonButton, useIonLoading } from "@ionic/react";
+import {
+  IonPage,
+  IonContent,
+  IonInput,
+  IonButton,
+  useIonLoading,
+} from "@ionic/react";
 import Image1 from "../../assets/images/image 1.webp";
 import Logo from "../../assets/images/logo2.webp";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useAuthGuard from "../../hooks/useAuthGuard";
 import { Preferences } from "@capacitor/preferences";
@@ -11,16 +17,15 @@ const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
   "https://close-chronicles-moldova-immune.trycloudflare.com/api";
 
-  
 export const ForgotPassword: React.FC = () => {
-  useAuthGuard(true, '/home');
+  useAuthGuard(true, "/home");
   const [present, dismiss] = useIonLoading();
   const [email, setEmail] = useState("");
   const history = useHistory();
-
+  const [responseError, setResponseError] = useState("");
 
   // set otp and expiration to preferences
-  const setOtpAndExpiration = async (otp: string, expires_at: string) => {
+  const setOtpExpirationAndEmail = async (otp: string, expires_at: string) => {
     await Preferences.set({
       key: "OTP",
       value: otp,
@@ -30,7 +35,31 @@ export const ForgotPassword: React.FC = () => {
       key: "OTP_EXPIRATION",
       value: expires_at,
     });
+
+    await Preferences.set({
+      key: "EMAIL",
+      value: email,
+    });
   };
+
+  // check if otp is set and not expired when the user back to this page, if true, redirect to verify_otp
+  const checkOtpAndExpiration = async () => {
+    const otp = await Preferences.get({ key: "OTP" });
+    const expires_at = await Preferences.get({ key: "OTP_EXPIRATION" });
+    const email = await Preferences.get({ key: "EMAIL" });
+
+    if (otp.value && expires_at.value && email.value) {
+      const now = new Date().getTime();
+      if (Number(expires_at.value) > now) {
+        history.push("/verify_otp");
+      }
+    }
+  };
+
+  // call it inside useEffect
+  useEffect(() => {
+    checkOtpAndExpiration();
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -51,11 +80,11 @@ export const ForgotPassword: React.FC = () => {
       );
 
       const { otp, expires_at } = response.data;
-      await setOtpAndExpiration(String(otp), String(expires_at));
+      await setOtpExpirationAndEmail(String(otp), String(new Date(expires_at).getTime()));
       history.push("/verify_otp");
-
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      const { errors } = error?.response.data;
+      setResponseError(errors?.email?.[0] || "Something went wrong. Please try again.");
     } finally {
       dismiss();
     }
@@ -107,15 +136,30 @@ export const ForgotPassword: React.FC = () => {
                   Email Address
                 </label>
                 <input
-                onInput={e => setEmail((e.target as HTMLInputElement).value)}
+                  onInput={(e) =>
+                    setEmail((e.target as HTMLInputElement).value)
+                  }
                   className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
                   style={{ borderRadius: "15px" }}
                   placeholder="johndoe@example.com"
                   type="email"
                   name="email"
-                  required
                   autoFocus
                 />
+
+                {/* error message */}
+                {responseError && (
+                  <p
+                    style={{
+                      fontSize: "0.9rem",
+                      color: "red",
+                      opacity: "0.8",
+                    }}
+                    className="mt-1"
+                  >
+                    {responseError}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-between mt-3">
@@ -126,6 +170,9 @@ export const ForgotPassword: React.FC = () => {
                     height: "40px",
                     width: "calc(100% / 2.1)",
                     borderRadius: "15px",
+                  }}
+                  onClick={() => {
+                    history.push("/signin");
                   }}
                 >
                   Cancel
