@@ -1,11 +1,13 @@
 import {
   IonPage,
   IonContent,
-  IonInput,
-  IonIcon,
-  IonModal,
-  IonButton,
   IonAlert,
+  IonToolbar,
+  IonHeader,
+  IonBackButton,
+  IonButtons,
+  useIonAlert,
+  IonIcon,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import Image2 from "../../assets/images/image 2.webp";
@@ -13,15 +15,19 @@ import Logo from "../../assets/images/logo2.webp";
 import useAuthGuard from "../../hooks/useAuthGuard";
 import { Preferences } from "@capacitor/preferences";
 import { useHistory } from "react-router-dom";
+import { arrowBack } from "ionicons/icons";
 
 export const VerifyOTP: React.FC = () => {
   useAuthGuard(true, "/home");
   const history = useHistory();
   const [otp, setOtp] = useState<string>("");
-  const [otpExpiration, setOtpExpiration] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [realOtp, setRealOtp] = useState<string>("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [countdown, setCountdown] = useState<number>(0);
+  const [isExpired, setIsExpired] = useState(false);
+  const [presentAlert] = useIonAlert();
 
   const handleKeyPress = (value: string) => {
     if ("vibrate" in window.navigator) {
@@ -33,42 +39,118 @@ export const VerifyOTP: React.FC = () => {
       setOtp((prev) => prev + value);
     }
   };
-  //  get otp and expiration from preferences
-  const getOtpAndExpiration = async () => {
-    const getOtp = await Preferences.get({
-      key: "OTP",
-    });
-    const getOtpExp = await Preferences.get({
-      key: "OTP_EXPIRATION",
-    });
 
-    await setOtpExpiration(getOtpExp.value || "");
-    await setRealOtp(getOtp.value || "");
+  const checkOtpAndExpiration = async () => {
+    const otpData = await Preferences.get({ key: "OTP" });
+    const expires_atData = await Preferences.get({ key: "OTP_EXPIRATION" });
+    const emailData = await Preferences.get({ key: "EMAIL" });
 
-    if (!getOtp.value || !getOtpExp.value) {
-      // redirect back to sign in page
-      history.push("/signin");
+    if (otpData.value && expires_atData.value && emailData.value) {
+      setEmail(emailData.value);
+      setRealOtp(otpData.value);
+
+      const expiresAt = Number(expires_atData.value);
+      const now = new Date().getTime();
+      const remainingTime = Math.max((expiresAt - now) / 1000, 0);
+
+      if (remainingTime <= 0) {
+        setIsExpired(true);
+        setAlertMessage("Sorry, OTP has expired!");
+        setAlertOpen(true);
+      } else {
+        setCountdown(Math.floor(remainingTime));
+      }
     }
   };
 
   useEffect(() => {
-    getOtpAndExpiration();
-  }, [otpExpiration, realOtp]);
+    checkOtpAndExpiration();
 
+    // Start countdown timer
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setAlertMessage("Sorry, OTP has expired!");
+          setAlertOpen(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle OTP submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(!otp) return;
-    if (otp == realOtp) {
-      setAlertMessage("OTP verified successfully!");
-      history.push("/reset_password");
+    if (!otp) return;
+
+    if (otp === realOtp && countdown > 0) {
+      (async () => {
+        await clearOtpData();
+        await Preferences.set({ key: "VERIFIED", value: 'true' });
+        await history.push("/reset_password");
+      })();
+
+    } else if (countdown <= 0) {
+      setAlertMessage("OTP has expired. Please request a new one.");
     } else {
       setAlertMessage("OTP is incorrect, please try again!");
     }
     setAlertOpen(true);
   };
 
+  const clearOtpData = async () => {
+    await Preferences.remove({ key: "OTP" });
+    await Preferences.remove({ key: "OTP_EXPIRATION" });
+    await Preferences.remove({ key: "EMAIL" });
+  };
+
+  const handleBack = async (event: React.MouseEvent) => {
+    event.preventDefault(); // Prevent default back action
+
+    if (isExpired) {
+      async () => {
+        await clearOtpData();
+      };
+      history.push("/signin");
+      return
+    }
+
+    presentAlert({
+      header: "Confirm",
+      message: "Are you sure you want to cancel? Your OTP will be lost.",
+      buttons: [
+        { text: "Cancel", role: "cancel" },
+        {
+          text: "Yes",
+          handler: async () => {
+            await clearOtpData();
+            history.push("/signin");
+          },
+        },
+      ],
+    });
+  };
+
   return (
     <IonPage className="mx-auto md:w-1/3">
+      <IonHeader style={{ boxShadow: "none" }}>
+        <IonToolbar>
+          <div className="px-2 flex items-center justify-start gap-2">
+            <IonIcon
+              className="cursor-poiner"
+              onClick={handleBack}
+              icon={arrowBack}
+            ></IonIcon>
+            <span className="cursor-poiner" onClick={handleBack}>
+              Cancel
+            </span>
+          </div>
+        </IonToolbar>
+      </IonHeader>
       <IonContent scrollY={true}>
         <div className="bg-black">
           <img
@@ -102,7 +184,7 @@ export const VerifyOTP: React.FC = () => {
               </h1>
               <br />
               <p style={{ fontSize: "1.2rem" }}>
-                We’ve sent a 4-digit code to <b>johndoe@gmail.com</b>.
+                We’ve sent a 4-digit code to <b>{email}</b>.
               </p>
 
               <div className="my-3">
@@ -124,7 +206,8 @@ export const VerifyOTP: React.FC = () => {
               </div>
 
               <p>
-                Code expire after <b className="text-yellow-700">60 seconds.</b>
+                Code expires in{" "}
+                <b className="text-yellow-700">{countdown} seconds.</b>
               </p>
 
               <div className="grid grid-cols-3 gap-2 mt-4">
@@ -169,12 +252,7 @@ export const VerifyOTP: React.FC = () => {
                 </button>
               </div>
 
-              <p className="py-3">
-                Didn't received code?{" "}
-                <b className="text-yellow-700">
-                  <u>Resend code again</u>
-                </b>
-              </p>
+              {/* add back or cancel button */}
             </div>
           </form>
         </div>

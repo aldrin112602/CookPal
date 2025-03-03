@@ -1,9 +1,12 @@
 import { IonPage, IonContent, IonInput, IonButton } from "@ionic/react";
 import Image1 from "../../assets/images/image 3.webp";
 import Logo from "../../assets/images/logo2.webp";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuthGuard from "../../hooks/useAuthGuard";
+import { Preferences } from "@capacitor/preferences";
+import { useHistory } from "react-router-dom";
+
 
 const BASE_URL_API =
   import.meta.env.VITE_BASE_URL_API ||
@@ -13,6 +16,19 @@ export const ResetPassword: React.FC = () => {
   useAuthGuard(true, "/home");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const history = useHistory();
+
+
+
+  useEffect(() => {
+    (async () => {
+      const isVerified = await Preferences.get({ key: "VERIFIED" });
+      if(!(isVerified.value && isVerified.value == 'true')) {
+        history.push('/signin')
+      }
+    })();
+
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
