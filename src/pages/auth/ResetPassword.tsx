@@ -215,6 +215,7 @@ export const ResetPassword: React.FC = () => {
                   Reset Password
                 </button>
               </div>
+              <p className="text-center mt-3 pb-2 text-slate-600">Go back to <a href="/signin" style={{ color: '#EFD950' }} className="underline text-shadow">Sign In Page</a></p>
             </div>
           </form>
         </div>

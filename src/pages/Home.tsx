@@ -29,6 +29,8 @@ const BASE_URL_API =
 export const Home: React.FC = () => {
   useAuthGuard(false, "/signin");
   const { user } = useFetchUser();
+  const [present, dismiss] = useIonLoading();
+  const loadingShown = useRef(false); // Track if loading was shown
 
   const [recipes, setRecipes] = useState([
     {
@@ -69,6 +71,30 @@ export const Home: React.FC = () => {
   ]);
 
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const handleLoading = async () => {
+      if (loading && !loadingShown.current) {
+        loadingShown.current = true; // Mark that loading was shown
+        await present("Loading screen, please wait...");
+
+        setTimeout(() => {
+          dismiss();
+          loadingShown.current = false; // Reset loading state
+        }, 1000);
+      }
+    };
+
+    handleLoading();
+  }, [loading, present, dismiss]);
+
+  useEffect(() => {
+    if (user) {
+      setLoading(false);
+    }
+  }, [user]);
+
   const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
 
   const handleSearchInput = (e: any) => {

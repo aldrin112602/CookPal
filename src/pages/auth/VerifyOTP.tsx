@@ -96,10 +96,12 @@ export const VerifyOTP: React.FC = () => {
       })();
     } else if (countdown <= 0) {
       setAlertMessage("OTP has expired. Please request a new one.");
+      setAlertOpen(true);
     } else {
       setAlertMessage("OTP is incorrect, please try again!");
+      setAlertOpen(true);
     }
-    setAlertOpen(true);
+    
   };
 
   const clearOtpData = async () => {
