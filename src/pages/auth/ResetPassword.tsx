@@ -1,9 +1,9 @@
 import {
   IonPage,
   IonContent,
-  IonInput,
-  IonButton,
   IonAlert,
+  useIonAlert,
+  useIonLoading,
 } from "@ionic/react";
 import Image1 from "../../assets/images/image 3.webp";
 import Logo from "../../assets/images/logo2.webp";
@@ -26,6 +26,8 @@ export const ResetPassword: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [presentAlert] = useIonAlert();
+  const [present, dismiss] = useIonLoading();
 
   const clearData = async () => {
     await Preferences.remove({ key: "VERIFIED" });
@@ -67,6 +69,8 @@ export const ResetPassword: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO: call api
+
+    await present("Submitting, please wait..");
     try {
       const response: any = await axios.post(
         `${BASE_URL_API}/password_reset`,
@@ -84,17 +88,18 @@ export const ResetPassword: React.FC = () => {
           timeout: 10000,
         }
       );
-      setPasswordError("");
-      setAlertMessage(response.data.message);
-      setAlertOpen(true);
       await clearData();
-      console.log(response.data);
+      setPasswordError("");
+      setAlertMessage('Password reset successful. Please sign in with your new password.');
+      setAlertOpen(true);
     } catch (error: any) {
       console.error(error);
       const { data } = error.response || {};
       const { errors } = data || {};
       const password = errors?.password ?? [];
       setPasswordError(password[0] ?? "");
+    } finally {
+      dismiss();
     }
   };
   return (
@@ -148,7 +153,7 @@ export const ResetPassword: React.FC = () => {
                   onInput={(e: React.FormEvent<HTMLInputElement>) =>
                     setPassword((e.target as HTMLInputElement).value)
                   }
-                  className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
+                  className=" bg-slate-100 px-4 py-3 w-full border"
                   style={{ borderRadius: "15px" }}
                   type="password"
                   name="password"
@@ -177,7 +182,7 @@ export const ResetPassword: React.FC = () => {
                   onInput={(e: React.FormEvent<HTMLInputElement>) =>
                     setConfirmPassword((e.target as HTMLInputElement).value)
                   }
-                  className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
+                  className="bg-slate-100 px-4 py-3 w-full border"
                   style={{ borderRadius: "15px" }}
                   type="password"
                   name="confirm_password"
@@ -188,13 +193,13 @@ export const ResetPassword: React.FC = () => {
               <div className="flex items-center justify-between mt-4">
                 <button
                   type="button"
-                  className="bg-slate-200"
+                  className="bg-slate-200 border"
                   style={{
                     height: "40px",
                     width: "calc(100% / 2.1)",
                     borderRadius: "15px",
                   }}
-                  onClick={() => handleBack}
+                  onClick={() => handleBack() }
                 >
                   Cancel
                 </button>
@@ -226,13 +231,5 @@ export const ResetPassword: React.FC = () => {
     </IonPage>
   );
 };
-function presentAlert(arg0: {
-  header: string;
-  message: string;
-  buttons: (
-    | { text: string; role: string }
-    | { text: string; handler: () => Promise<void> }
-  )[];
-}) {
-  throw new Error("Function not implemented.");
-}
+
+

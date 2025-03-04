@@ -90,10 +90,10 @@ export const VerifyOTP: React.FC = () => {
     if (otp === realOtp && countdown > 0) {
       (async () => {
         await clearOtpData();
-        await Preferences.set({ key: "VERIFIED", value: 'true' });
+        await Preferences.set({ key: "VERIFIED", value: "true" });
         await history.push("/reset_password");
+        return;
       })();
-
     } else if (countdown <= 0) {
       setAlertMessage("OTP has expired. Please request a new one.");
     } else {
@@ -115,7 +115,7 @@ export const VerifyOTP: React.FC = () => {
         await clearOtpData();
       };
       history.push("/signin");
-      return
+      return;
     }
 
     presentAlert({
@@ -140,11 +140,15 @@ export const VerifyOTP: React.FC = () => {
         <IonToolbar>
           <div className="px-2 flex items-center justify-start gap-2">
             <IonIcon
-              className="cursor-poiner"
+              style={{ cursor: "pointer" }}
               onClick={handleBack}
               icon={arrowBack}
             ></IonIcon>
-            <span className="cursor-poiner" onClick={handleBack}>
+            <span
+              className="px-4 py-1"
+              style={{ cursor: "pointer" }}
+              onClick={handleBack}
+            >
               Cancel
             </span>
           </div>

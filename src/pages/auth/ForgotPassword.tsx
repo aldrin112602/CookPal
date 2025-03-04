@@ -141,7 +141,7 @@ export const ForgotPassword: React.FC = () => {
                   onInput={(e) =>
                     setEmail((e.target as HTMLInputElement).value)
                   }
-                  className="bg-slate-100 px-4 py-3 w-full border border-slate-200"
+                  className="bg-slate-100 px-4 py-3 w-full border"
                   style={{ borderRadius: "15px" }}
                   placeholder="johndoe@example.com"
                   type="email"

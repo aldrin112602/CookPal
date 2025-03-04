@@ -271,7 +271,7 @@ export const Profile = () => {
               <input
                 className={`${
                   toggleEdit ? "bg-white" : "bg-slate-100"
-                } px-4 py-3 w-full border border-slate-100`}
+                } px-4 py-3 w-full border`}
                 style={{ borderRadius: "15px" }}
                 placeholder="Full Name"
                 name="name"
@@ -289,7 +289,7 @@ export const Profile = () => {
                 value={formData.email}
                 className={`${
                   toggleEdit ? "bg-white" : "bg-slate-100"
-                } px-4 py-3 w-full border border-slate-100`}
+                } px-4 py-3 w-full border`}
                 style={{ borderRadius: "15px" }}
                 placeholder="Email Address"
                 type="email"
@@ -305,7 +305,7 @@ export const Profile = () => {
                 value={formData.username}
                 className={`${
                   toggleEdit ? "bg-white" : "bg-slate-100"
-                } px-4 py-3 w-full border border-slate-100`}
+                } px-4 py-3 w-full border`}
                 style={{ borderRadius: "15px" }}
                 placeholder="Username"
                 name="username"
@@ -320,7 +320,7 @@ export const Profile = () => {
               <input
                 className={`${
                   toggleEdit ? "bg-white" : "bg-slate-100"
-                } px-4 py-3 w-full border border-slate-100`}
+                } px-4 py-3 w-full border`}
                 style={{ borderRadius: "15px" }}
                 placeholder="Current Password"
                 type="password"
@@ -335,7 +335,7 @@ export const Profile = () => {
               <input
                 className={`${
                   toggleEdit ? "bg-white" : "bg-slate-100"
-                } px-4 py-3 w-full border border-slate-100`}
+                } px-4 py-3 w-full border`}
                 style={{ borderRadius: "15px" }}
                 placeholder="New Password"
                 type="password"
