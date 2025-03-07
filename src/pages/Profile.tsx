@@ -32,9 +32,8 @@ interface UserProfile {
   new_password?: string;
 }
 const BASE_URL_API =
-  import.meta.env.VITE_BASE_URL_API ||
-  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
-
+  import.meta.env?.VITE_BASE_URL_API ??
+  "https://lavender-armadillo-802676.hostingersite.com/api";
 export const Profile = () => {
   useAuthGuard(!1, "/signin");
   const { user } = useFetchUser();
@@ -56,6 +55,25 @@ export const Profile = () => {
     new_password: "",
   });
 
+  const loadingShown = useRef(false); // Track if loading was shown
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const handleLoading = async () => {
+      if (loading && !loadingShown.current) {
+        loadingShown.current = true; // Mark that loading was shown
+        await present("Loading screen, please wait...");
+
+        setTimeout(() => {
+          dismiss();
+          loadingShown.current = false; // Reset loading state
+        }, 1000);
+      }
+    };
+
+    handleLoading();
+  }, [loading, present, dismiss]);
+
   useEffect(() => {
     if (user && Object.keys(user).length > 0) {
       setFormData({
@@ -64,6 +82,8 @@ export const Profile = () => {
         profile: user.profile || "",
         username: user.username || "",
       });
+
+      setLoading(false);
     }
   }, [user]);
 
@@ -104,6 +124,12 @@ export const Profile = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
+      const reader = new FileReader();
+      reader.onload = () => {
+        profilePlaceholder.current!.src = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
       await present("Uploading, please wait...");
 
       const formData = new FormData();
@@ -121,7 +147,7 @@ export const Profile = () => {
           timeout: 10000,
         }
       );
-      const { message, profile_url } = response.data;
+      const { message } = response.data;
       setSuccessMessage(message);
       SetShowSuccessAlert(true);
     } catch (error) {
@@ -132,7 +158,6 @@ export const Profile = () => {
       event.target.value = "";
     }
   };
-
 
   const validateForm = () => {
     let newErrors: Record<string, string> = {};
@@ -164,17 +189,16 @@ export const Profile = () => {
       SetShowSuccessAlert(true);
     } catch (error: any) {
       const { data } = error.response;
-      console.log(data)
+      console.log(data);
 
-      
-        const { new_password, name, email, username, password } = data.errors;
-        setErrors({
-          new_password: new_password ? new_password[0] : "",
-          password: password ? password[0] : "",
-          name: name ? name[0] : "",
-          email: email ? email[0] : "",
-          username: username ? username[0] : "",
-        });
+      const { new_password, name, email, username, password } = data.errors;
+      setErrors({
+        new_password: new_password ? new_password[0] : "",
+        password: password ? password[0] : "",
+        name: name ? name[0] : "",
+        email: email ? email[0] : "",
+        username: username ? username[0] : "",
+      });
       console.error("Failed to save changes:", error);
       // setShowAlert(true);
     } finally {
@@ -218,9 +242,7 @@ export const Profile = () => {
                 ref={profilePlaceholder}
                 src={
                   formData.profile
-                    ? `${BASE_URL_API.replace("api", "")}storage/${
-                        formData.profile
-                      }`
+                    ? `${BASE_URL_API.replace("api", "")}${formData.profile}`
                     : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
                 }
                 className="mb-3 object-cover border rounded-full border-yellow-500 bg-white"
@@ -281,7 +303,9 @@ export const Profile = () => {
                 disabled={!toggleEdit}
                 autoFocus
               />
-              {errors.name && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.name}</p>}
+              {errors.name && (
+                <p className="text-sm text-rose-800 mt-1 mb-3">{errors.name}</p>
+              )}
             </div>
 
             <div className="mt-3">
@@ -297,7 +321,11 @@ export const Profile = () => {
                 onChange={handleChange}
                 disabled={!toggleEdit}
               />
-              {errors.email && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-sm text-rose-800 mt-1 mb-3">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div className="mt-3">
@@ -313,7 +341,11 @@ export const Profile = () => {
                 onChange={handleChange}
                 disabled={!toggleEdit}
               />
-              {errors.username && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.username}</p>}
+              {errors.username && (
+                <p className="text-sm text-rose-800 mt-1 mb-3">
+                  {errors.username}
+                </p>
+              )}
             </div>
 
             <div className="mt-3">
@@ -328,7 +360,11 @@ export const Profile = () => {
                 disabled={!toggleEdit}
                 onChange={handleChange}
               />
-              {errors.password && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-sm text-rose-800 mt-1 mb-3">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <div className="mt-3">
@@ -343,7 +379,11 @@ export const Profile = () => {
                 disabled={!toggleEdit}
                 onChange={handleChange}
               />
-              {errors.new_password && <p className="text-sm text-rose-800 mt-1 mb-3">{errors.new_password}</p>}
+              {errors.new_password && (
+                <p className="text-sm text-rose-800 mt-1 mb-3">
+                  {errors.new_password}
+                </p>
+              )}
             </div>
 
             <div className="grid">

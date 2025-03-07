@@ -14,9 +14,7 @@ import { Preferences } from "@capacitor/preferences";
 import { useHistory } from "react-router-dom";
 
 const BASE_URL_API =
-  import.meta.env.VITE_BASE_URL_API ||
-  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
-
+  import.meta.env?.VITE_BASE_URL_API ?? "https://lavender-armadillo-802676.hostingersite.com/api";
 export const ResetPassword: React.FC = () => {
   useAuthGuard(true, "/home");
   const [password, setPassword] = useState("");

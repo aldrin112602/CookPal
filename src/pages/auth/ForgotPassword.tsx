@@ -14,9 +14,7 @@ import useAuthGuard from "../../hooks/useAuthGuard";
 import { Preferences } from "@capacitor/preferences";
 
 const BASE_URL_API =
-  import.meta.env.VITE_BASE_URL_API ||
-  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
-
+  import.meta.env?.VITE_BASE_URL_API ?? "https://lavender-armadillo-802676.hostingersite.com/api";
 export const ForgotPassword: React.FC = () => {
   useAuthGuard(true, "/home");
   const [present, dismiss] = useIonLoading();

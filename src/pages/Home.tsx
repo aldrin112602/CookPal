@@ -17,20 +17,19 @@ import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
 import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
-import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import useAuthGuard from "../hooks/useAuthGuard";
 import useFetchUser from "../hooks/useFetchUser";
+import useFetchRecipes from "../hooks/useFetchRecipes";
 
 const BASE_URL_API =
-  import.meta.env.VITE_BASE_URL_API ||
-  "https://close-chronicles-moldova-immune.trycloudflare.com/api";
-
+  import.meta.env?.VITE_BASE_URL_API ??
+  "https://lavender-armadillo-802676.hostingersite.com/api";
 export const Home: React.FC = () => {
   useAuthGuard(false, "/signin");
   const { user } = useFetchUser();
   const [present, dismiss] = useIonLoading();
-  const loadingShown = useRef(false); // Track if loading was shown
+  const loadingShown = useRef(false);
 
   const [recipes, setRecipes] = useState([
     {
@@ -127,9 +126,7 @@ export const Home: React.FC = () => {
                     <img
                       src={
                         user && user.profile
-                          ? `${BASE_URL_API.replace("api", "")}storage/${
-                              user.profile
-                            }`
+                          ? `${BASE_URL_API.replace("api", "")}${user.profile}`
                           : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
                       }
                       alt="Profile avatar"
