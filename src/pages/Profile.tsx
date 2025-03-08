@@ -34,7 +34,7 @@ interface UserProfile {
 const BASE_URL_API =
   import.meta.env?.VITE_BASE_URL_API ??
   "https://lavender-armadillo-802676.hostingersite.com/api";
-export const Profile = () => {
+const Profile = () => {
   useAuthGuard(!1, "/signin");
   const { user } = useFetchUser();
   const [toggleEdit, setToggleEdit] = useState(false);
@@ -458,3 +458,5 @@ export const Profile = () => {
     </IonPage>
   );
 };
+
+export default Profile;

@@ -24,7 +24,7 @@ const INTRO_KEY = "intro-seen";
 const BASE_URL_API =
   import.meta.env?.VITE_BASE_URL_API ?? "https://lavender-armadillo-802676.hostingersite.com/api";
   
-export const Signin: React.FC = () => {
+const Signin: React.FC = () => {
   useAuthGuard(true, "/home");
   const [introSeen, setIntroSeen] = useState(false);
   const [present, dismiss] = useIonLoading();
@@ -388,3 +388,5 @@ export const Signin: React.FC = () => {
     </IonPage>
   );
 };
+
+export default Signin;

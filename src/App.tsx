@@ -31,16 +31,17 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import React, { Suspense } from "react";
-import { ForgotPassword } from "./pages/auth/ForgotPassword";
-import { ResetPassword } from "./pages/auth/ResetPassword";
-import { Signin } from "./pages/auth/Signin";
-import { Signup } from "./pages/auth/Signup";
-import { VerifyOTP } from "./pages/auth/VerifyOTP";
-import { Favorites } from "./pages/Favorites";
-import { FeaturedShowcase } from "./pages/FeaturedShowcase";
-import { Home } from "./pages/Home";
-import { Profile } from "./pages/Profile";
+import React from "react";
+import AddRecipe from "./pages/AddRecipe";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
+import Signin from "./pages/auth/Signin";
+import Signup from "./pages/auth/Signup";
+import VerifyOTP from "./pages/auth/VerifyOTP";
+import Favorites from "./pages/Favorites";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import FeaturedShowcase from "./pages/FeaturedShowcase";
 
 setupIonicReact();
 
@@ -75,6 +76,9 @@ const App: React.FC = () => (
           </Route>
           <Route path="/reset_password" exact={true}>
             <ResetPassword />
+          </Route>
+          <Route path="/add_recipe" exact={true}>
+            <AddRecipe />
           </Route>
       </IonRouterOutlet>
     </IonReactRouter>

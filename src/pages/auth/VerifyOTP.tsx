@@ -17,7 +17,7 @@ import { Preferences } from "@capacitor/preferences";
 import { useHistory } from "react-router-dom";
 import { arrowBack } from "ionicons/icons";
 
-export const VerifyOTP: React.FC = () => {
+const VerifyOTP: React.FC = () => {
   useAuthGuard(true, "/home");
   const history = useHistory();
   const [otp, setOtp] = useState<string>("");
@@ -273,3 +273,5 @@ export const VerifyOTP: React.FC = () => {
     </IonPage>
   );
 };
+
+export default VerifyOTP;

@@ -50,9 +50,14 @@ const featuredRoutes: FeaturedItem[] = [
     title: "Reset Password",
     path: "/reset_password",
   },
+
+  {
+    title: "Add Recipe",
+    path: "/add_recipe",
+  },
 ];
 
-export const FeaturedShowcase: React.FC = () => {
+const FeaturedShowcase: React.FC = () => {
   return (
     <IonPage>
       <IonContent>
@@ -77,3 +82,6 @@ export const FeaturedShowcase: React.FC = () => {
     </IonPage>
   );
 };
+
+
+export default FeaturedShowcase;

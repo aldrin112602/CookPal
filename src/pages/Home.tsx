@@ -27,7 +27,7 @@ const BASE_URL_API =
   import.meta.env?.VITE_BASE_URL_API ??
   "https://lavender-armadillo-802676.hostingersite.com/api";
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
   useAuthGuard(false, "/signin");
   const { user } = useFetchUser();
   const [present, dismiss] = useIonLoading();
@@ -194,3 +194,5 @@ export const Home: React.FC = () => {
     </IonPage>
   );
 };
+
+export default Home;

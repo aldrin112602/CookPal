@@ -23,7 +23,7 @@ import RecipeCard from "../components/RecipeCard";
 import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 import useAuthGuard from "../hooks/useAuthGuard";
 
-export const Favorites: React.FC = () => {
+const Favorites: React.FC = () => {
   useAuthGuard(!1, '/signin');
   const [recipes, setRecipes] = useState([
     {
@@ -137,14 +137,16 @@ export const Favorites: React.FC = () => {
               >
                 {filteredRecipes.length ? (
                   filteredRecipes.map((recipe, index) => (
-                    <RecipeCard
-                      key={recipe.id}
-                      recipe={recipe}
-                      recipes={recipes}
-                      setFilteredRecipes={setFilteredRecipes}
-                      setRecipes={setRecipes}
-                      filteredRecipes={filteredRecipes}
-                    />
+                    <>
+                    </>
+                    // <RecipeCard
+                    //   key={recipe.id}
+                    //   recipe={recipe}
+                    //   recipes={recipes}
+                    //   setFilteredRecipes={setFilteredRecipes}
+                    //   setRecipes={setRecipes}
+                    //   filteredRecipes={filteredRecipes}
+                    // />
                   ))
                 ) : (
                   <NoResultsFoundRecipe
@@ -192,3 +194,5 @@ export const Favorites: React.FC = () => {
     </IonPage>
   );
 };
+
+export default Favorites;
