@@ -42,6 +42,7 @@ import Favorites from "./pages/Favorites";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import FeaturedShowcase from "./pages/FeaturedShowcase";
+import ViewUser from "./pages/ViewUser";
 
 setupIonicReact();
 
@@ -79,6 +80,9 @@ const App: React.FC = () => (
           </Route>
           <Route path="/add_recipe" exact={true}>
             <AddRecipe />
+          </Route>
+          <Route path="/profile/:id" exact={true}>
+            <ViewUser />
           </Route>
       </IonRouterOutlet>
     </IonReactRouter>

@@ -1,5 +1,7 @@
 import { IonCard, IonImg, IonIcon } from "@ionic/react";
 import { heart, heartOutline, timeOutline, eyeOutline } from "ionicons/icons";
+import { useHistory } from "react-router-dom";
+
 const BASE_URL_API =
   import.meta.env?.VITE_BASE_URL_API ??
   "https://lavender-armadillo-802676.hostingersite.com/api";
@@ -43,6 +45,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   filteredRecipes,
   setFilteredRecipes,
 }) => {
+
+  const history = useHistory();
   const toggleFavorite = () => {
     const updatedRecipes = recipes.map((item) =>
       item.id === recipe.id ? { ...item, isFavorite: !item.isFavorite } : item
@@ -80,6 +84,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
               alt="Profile avatar"
               width={"50px"}
               className="rounded-full border border-slate-400 cursor-pointer object-cover" 
+              onClick={() => history.push(`/profile/${recipe.user.id}`)}
             />
             <div
               className="text-white p-2"
