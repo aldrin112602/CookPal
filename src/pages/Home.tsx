@@ -21,78 +21,35 @@ import axios from "axios";
 import useAuthGuard from "../hooks/useAuthGuard";
 import useFetchUser from "../hooks/useFetchUser";
 import useFetchRecipes from "../hooks/useFetchRecipes";
+import { useHistory } from "react-router-dom";
 
 const BASE_URL_API =
   import.meta.env?.VITE_BASE_URL_API ??
   "https://lavender-armadillo-802676.hostingersite.com/api";
+
 export const Home: React.FC = () => {
   useAuthGuard(false, "/signin");
   const { user } = useFetchUser();
   const [present, dismiss] = useIonLoading();
   const loadingShown = useRef(false);
-
-  const [recipes, setRecipes] = useState([
-    {
-      id: 3,
-      title: "Sinigang na bangus",
-      time: "45 min",
-      price: "₱181.25",
-      image: "https://assets.unileversolutions.com/recipes-v2/110716.png",
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      title: "Tortang talong",
-      time: "25 min",
-      price: "₱180 - ₱200",
-      image:
-        "https://www.pinoyfamilyrecipes.com/wp-content/uploads/2024/05/Tortang-Talong-1.jpg",
-      isFavorite: false,
-    },
-    {
-      id: 1,
-      title: "Filipino Style Pork Adobo",
-      time: "45 min",
-      price: "₱181.25",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/1200px-Adobo_DSCF4391.jpg",
-      isFavorite: false,
-    },
-    {
-      id: 2,
-      title: "Fried Chicken",
-      time: "25 min",
-      price: "₱180 - ₱200",
-      image:
-        "https://christieathome.com/wp-content/uploads/2020/10/Facetune_06-10-2020-15-37-58-scaled.jpg",
-      isFavorite: false,
-    },
-  ]);
-
+  const { recipes, loading, error, setRecipes } = useFetchRecipes();
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
-  const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
-    const handleLoading = async () => {
-      if (loading && !loadingShown.current) {
-        loadingShown.current = true; // Mark that loading was shown
-        await present("Loading screen, please wait...");
-
-        setTimeout(() => {
-          dismiss();
-          loadingShown.current = false; // Reset loading state
-        }, 1000);
-      }
-    };
-
-    handleLoading();
-  }, [loading, present, dismiss]);
-
-  useEffect(() => {
-    if (user) {
-      setLoading(false);
+    if (error) {
+      present(error);
     }
-  }, [user]);
+
+    if (loading && !loadingShown.current && !error && !user) {
+      loadingShown.current = true;
+      present("Loading screen, please wait...");
+    } else {
+      setFilteredRecipes(recipes);
+      console.log(recipes);
+      dismiss();
+    }
+  }, [recipes]);
 
   const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
 
@@ -132,10 +89,7 @@ export const Home: React.FC = () => {
                       alt="Profile avatar"
                       style={{ width: "50px", height: "50px" }}
                       className="rounded-full border border-slate-400 cursor-pointer object-cover"
-                      onClick={() => {
-                        // Open profile section
-                        location.assign("/profile");
-                      }}
+                      onClick={() => history.push("/profile")}
                     />
                     {/* User Info */}
                     {user && (

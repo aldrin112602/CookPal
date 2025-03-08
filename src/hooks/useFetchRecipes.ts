@@ -38,7 +38,7 @@ const useFetchRecipes = () => {
     fetchRecipes();
   }, []);
 
-  return { recipes, loading, error };
+  return { recipes, loading, error, setRecipes };
 };
 
 export default useFetchRecipes;

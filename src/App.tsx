@@ -31,71 +31,24 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import LoadingScreen from "./components/LoadingScreen";
 import React, { Suspense } from "react";
-
-// Lazy load components
-const Signin = React.lazy(() =>
-  import("./pages/auth/Signin").then((module) => ({
-    default: module.Signin,
-  }))
-);
-
-const ResetPassword = React.lazy(() =>
-  import("./pages/auth/ResetPassword").then((module) => ({
-    default: module.ResetPassword,
-  }))
-);
-
-const VerifyOTP = React.lazy(() =>
-  import("./pages/auth/VerifyOTP").then((module) => ({
-    default: module.VerifyOTP,
-  }))
-);
-
-const Signup = React.lazy(() =>
-  import("./pages/auth/Signup").then((module) => ({
-    default: module.Signup,
-  }))
-);
-
-const Home = React.lazy(() =>
-  import("./pages/Home").then((module) => ({
-    default: module.Home,
-  }))
-);
-
-const Favorites = React.lazy(() =>
-  import("./pages/Favorites").then((module) => ({
-    default: module.Favorites,
-  }))
-);
-
-const FeaturedShowcase = React.lazy(() =>
-  import("./pages/FeaturedShowcase").then((module) => ({
-    default: module.FeaturedShowcase,
-  }))
-);
-
-const Profile = React.lazy(() =>
-  import("./pages/Profile").then((module) => ({
-    default: module.Profile,
-  }))
-);
-
-const ForgotPassword = React.lazy(() =>
-  import("./pages/auth/ForgotPassword").then((module) => ({
-    default: module.ForgotPassword,
-  }))
-);
+import { ForgotPassword } from "./pages/auth/ForgotPassword";
+import { ResetPassword } from "./pages/auth/ResetPassword";
+import { Signin } from "./pages/auth/Signin";
+import { Signup } from "./pages/auth/Signup";
+import { VerifyOTP } from "./pages/auth/VerifyOTP";
+import { Favorites } from "./pages/Favorites";
+import { FeaturedShowcase } from "./pages/FeaturedShowcase";
+import { Home } from "./pages/Home";
+import { Profile } from "./pages/Profile";
 
 setupIonicReact();
+
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet id="main">
-        <Suspense fallback={<LoadingScreen />}>
           <Route path="/" exact={true}>
             <FeaturedShowcase />
           </Route>
@@ -123,7 +76,6 @@ const App: React.FC = () => (
           <Route path="/reset_password" exact={true}>
             <ResetPassword />
           </Route>
-        </Suspense>
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
