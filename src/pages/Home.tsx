@@ -11,7 +11,13 @@ import {
   IonPage,
   useIonLoading,
 } from "@ionic/react";
-import { homeOutline, addOutline, heartOutline } from "ionicons/icons";
+import {
+  homeOutline,
+  addOutline,
+  heartOutline,
+  search,
+  closeOutline,
+} from "ionicons/icons";
 import React, { useEffect, useRef, useState } from "react";
 import "../assets/styles/Home.css";
 import CookPalDesign from "../assets/images/CookPal Design.webp";
@@ -36,6 +42,7 @@ const Home: React.FC = () => {
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
   const [isFocus, setIsFocus] = useState(false);
   const history = useHistory();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (error) {
@@ -52,7 +59,7 @@ const Home: React.FC = () => {
     }
   }, [recipes]);
 
-  const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
+  
 
   const handleSearchInput = (e: any) => {
     setIsFocus(true);
@@ -116,18 +123,51 @@ const Home: React.FC = () => {
                 delicious food's.
               </h1>
 
-              <div className="px-3">
-                <IonSearchbar
-                  placeholder="Search Recipe"
-                  className="custom-searchbar"
+              <div className="px-3" style={{ position: "relative" }}>
+                <input
+                  type="search"
                   onInput={handleSearchInput}
-                  ref={searchInputRef}
-                  onIonClear={() => {
-                    setFilteredRecipes(recipes);
+                  onBlur={() => {
                     setIsFocus(false);
                   }}
+                  ref={searchInputRef}
+                  style={{ border: "1px solid #ccc" }}
+                  className="w-full rounded-full py-3 px-4 transition-all"
+                  placeholder="Search.."
                 />
+                {!isFocus && (
+                  <IonIcon
+                    icon={search}
+                    style={{
+                      position: "absolute",
+                      right: "30px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    }}
+                  />
+                )}
+
+                {isFocus && (
+                  <IonIcon
+                    icon={closeOutline}
+                    style={{
+                      position: "absolute",
+                      right: "30px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                    }}
+                    onClick={() => {
+                      if (searchInputRef.current) {
+                        searchInputRef.current.value = "";
+                        setFilteredRecipes(recipes);
+                        setIsFocus(false);
+                        
+                      }
+                    }}
+                  />
+                )}
               </div>
+              <br />
             </IonHeader>
 
             <IonContent

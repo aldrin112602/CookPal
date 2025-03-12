@@ -45,7 +45,6 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   filteredRecipes,
   setFilteredRecipes,
 }) => {
-
   const history = useHistory();
   const toggleFavorite = () => {
     const updatedRecipes = recipes.map((item) =>
@@ -59,9 +58,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
       )
     );
   };
-  
 
-  const defaultImage = "https://img.freepik.com/premium-vector/image-available-icon-set-default-missing-photo-stock-vector-symbol-black-filled-outlined-style-no-image-found-sign_268104-6708.jpg?semt=ais_hybrid";
+  const defaultImage =
+    "https://img.freepik.com/premium-vector/image-available-icon-set-default-missing-photo-stock-vector-symbol-black-filled-outlined-style-no-image-found-sign_268104-6708.jpg?semt=ais_hybrid";
   const profileImage = recipe?.user?.profile
     ? `${BASE_URL_API.replace("api", "")}${recipe?.user?.profile}`
     : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s";
@@ -83,15 +82,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
               src={profileImage}
               alt="Profile avatar"
               width={"50px"}
-              className="rounded-full border border-slate-400 cursor-pointer object-cover" 
+              className="rounded-full border border-slate-400 cursor-pointer object-cover"
               onClick={() => history.push(`/profile/${recipe.user.id}`)}
             />
-            <div
-              className="text-white p-2"
-              style={{ textShadow: "1px 1px 5px #222" }}
-            >
+            <div className="text-block p-2">
               <span className="block font-semibold">{recipe.user.name}</span>
-              <span className="block">{recipe.time_ago}</span>
+              <span className="block">Posted {recipe.time_ago}</span>
             </div>
           </div>
           <div
@@ -142,7 +138,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
             </span>
           </div>
 
-          <span className="text-white mr-5 flex border px-1 rounded-full items-center justify-start gap-1 hover:bg-yellow cursor-pointer hover:text-black transition-all">
+          <span className="text-black mr-5 flex border px-1 rounded-full items-center justify-start gap-1 hover:bg-yellow cursor-pointer bg-white hover:text-black transition-all">
             <IonIcon icon={eyeOutline} /> View Recipe
           </span>
         </div>
