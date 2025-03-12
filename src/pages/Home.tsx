@@ -34,6 +34,7 @@ const Home: React.FC = () => {
   const loadingShown = useRef(false);
   const { recipes, loading, error, setRecipes } = useFetchRecipes();
   const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+  const [isFocus, setIsFocus] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const Home: React.FC = () => {
   const searchInputRef = useRef<HTMLIonSearchbarElement>(null);
 
   const handleSearchInput = (e: any) => {
+    setIsFocus(true);
     const searchTerm = e.target.value.trim().toLowerCase();
 
     if (!searchTerm) {
@@ -122,6 +124,7 @@ const Home: React.FC = () => {
                   ref={searchInputRef}
                   onIonClear={() => {
                     setFilteredRecipes(recipes);
+                    setIsFocus(false);
                   }}
                 />
               </div>
@@ -150,6 +153,7 @@ const Home: React.FC = () => {
                   ))
                 ) : (
                   <NoResultsFoundRecipe
+                    isFocus={isFocus}
                     recipes={recipes}
                     setFilteredRecipes={setFilteredRecipes}
                   />
