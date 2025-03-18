@@ -79,8 +79,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
           className="w-full rounded-full py-3 px-4 transition-all"
           placeholder="Search.."
         />
-        {!isFocus && (
-          <IonIcon
+        <IonIcon
             icon={search}
             style={{
               position: "absolute",
@@ -88,27 +87,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
               top: "50%",
               transform: "translateY(-50%)",
             }}
-          />
-        )}
-
-        {isFocus && (
-          <IonIcon
-            icon={closeOutline}
-            style={{
-              position: "absolute",
-              right: "30px",
-              top: "50%",
-              transform: "translateY(-50%)",
-            }}
-            onClick={() => {
-              if (searchInputRef.current) {
-                searchInputRef.current.value = "";
-                setFilteredRecipes(recipes);
-                setIsFocus(false);
-              }
-            }}
-          />
-        )}
+          />  
       </div>
       <br />
     </IonHeader>
