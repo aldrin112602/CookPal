@@ -1,35 +1,21 @@
+import React, { useEffect, useRef } from "react";
 import {
   IonTabs,
   IonTab,
-  IonHeader,
-  IonToolbar,
-  IonContent,
-  IonTabBar,
-  IonTabButton,
-  IonIcon,
   IonPage,
   useIonLoading,
 } from "@ionic/react";
-import {
-  homeOutline,
-  addOutline,
-  heartOutline,
-  search,
-  closeOutline,
-} from "ionicons/icons";
-import React, { useEffect, useRef, useState } from "react";
 import "../assets/styles/Home.css";
-import CookPalDesign from "../assets/images/CookPal Design.webp";
-import RecipeCard from "../components/RecipeCard";
-import NoResultsFoundRecipe from "../components/NoResultsFoundRecipe";
 import useAuthGuard from "../hooks/useAuthGuard";
 import useFetchUser from "../hooks/useFetchUser";
 import useFetchRecipes from "../hooks/useFetchRecipes";
-import { useHistory } from "react-router-dom";
+import useSearch from "../hooks/useSearch";
+import HomeHeader from "../components/home/HomeHeader";
 
-const BASE_URL_API =
-  import.meta.env?.VITE_BASE_URL_API ??
-  "https://lavender-armadillo-802676.hostingersite.com/api";
+import RecipeContent from "../components/home/RecipeContent";
+import TabBar from "../components/home/TabBar";
+import AddRecipeTab from "../components/home/AddRecipeTab";
+import FavoritesTab from "../components/home/FavoritesTab";
 
 const Home: React.FC = () => {
   useAuthGuard(false, "/signin");
@@ -37,10 +23,14 @@ const Home: React.FC = () => {
   const [present, dismiss] = useIonLoading();
   const loadingShown = useRef(false);
   const { recipes, loading, error, setRecipes } = useFetchRecipes();
-  const [filteredRecipes, setFilteredRecipes] = useState(recipes);
-  const [isFocus, setIsFocus] = useState(false);
-  const history = useHistory();
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const {
+    filteredRecipes,
+    setFilteredRecipes,
+    isFocus,
+    setIsFocus,
+    searchInputRef,
+    handleSearchInput,
+  } = useSearch(recipes);
 
   useEffect(() => {
     if (error) {
@@ -55,113 +45,16 @@ const Home: React.FC = () => {
       console.log(recipes);
       dismiss();
     }
-  }, [recipes]);
+  }, [recipes, error, loading, user, present, dismiss, setFilteredRecipes]);
 
-  const handleSearchInput = (e: any) => {
-    setIsFocus(true);
-    const searchTerm = e.target.value.trim().toLowerCase();
-
-    if (!searchTerm) {
-      setFilteredRecipes(recipes);
-    } else {
-      handleSearchTerm(searchTerm);
-    }
-  };
-
-  const handleSearchTerm = (searchTerm: string) => {
-    const filteredItems = recipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(searchTerm)
-    );
-    setFilteredRecipes(filteredItems);
-  };
-
-  const HeaderTab = () => {
-    return (
-      <IonHeader style={{ boxShadow: "none" }}>
-        <IonToolbar>
-          <div className="flex items-center justify-between px-4 py-2">
-            <div className="flex items-center justify-start gap-2">
-              {/* user profile placeholder */}
-              <img
-                src={
-                  user && user.profile
-                    ? `${BASE_URL_API.replace("api", "")}${user.profile}`
-                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s"
-                }
-                alt="Profile avatar"
-                style={{ width: "50px", height: "50px" }}
-                className="rounded-full border border-slate-400 cursor-pointer object-cover"
-                onClick={() => history.push("/profile")}
-              />
-              {/* User Info */}
-              {user && (
-                <div style={{ lineHeight: "20px" }}>
-                  <span className="block font-semibold">{user.name}</span>
-                  <span className="block">{user.email}</span>
-                </div>
-              )}
-            </div>
-            <img
-              src={CookPalDesign}
-              alt="CookPal"
-              className="logo"
-              width={"50px"}
-            />
-          </div>
-        </IonToolbar>
-
-        <h1 className="caprasimo-bold px-5">
-          Let's make
-          <br />
-          delicious food's.
-        </h1>
-
-        <div className="px-3" style={{ position: "relative" }}>
-          <input
-            type="search"
-            onInput={handleSearchInput}
-            onBlur={() => {
-              setIsFocus(false);
-            }}
-            ref={searchInputRef}
-            style={{ border: "1px solid #ccc" }}
-            className="w-full rounded-full py-3 px-4 transition-all"
-            placeholder="Search.."
-          />
-          {!isFocus && (
-            <IonIcon
-              icon={search}
-              style={{
-                position: "absolute",
-                right: "30px",
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            />
-          )}
-
-          {isFocus && (
-            <IonIcon
-              icon={closeOutline}
-              style={{
-                position: "absolute",
-                right: "30px",
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-              onClick={() => {
-                if (searchInputRef.current) {
-                  searchInputRef.current.value = "";
-                  setFilteredRecipes(recipes);
-                  setIsFocus(false);
-                }
-              }}
-            />
-          )}
-        </div>
-        <br />
-      </IonHeader>
-    );
+  const headerProps = {
+    user,
+    handleSearchInput,
+    isFocus,
+    setIsFocus,
+    searchInputRef,
+    recipes,
+    setFilteredRecipes,
   };
 
   return (
@@ -170,100 +63,28 @@ const Home: React.FC = () => {
         {/* Home Tab */}
         <IonTab tab="home">
           <div id="home-page">
-            <HeaderTab />
-            <IonContent
-              scrollY={true}
-              style={{
-                minHeight: "45vh",
-              }}
-            >
-              <div
-                className="px-4 py-5"
-                style={{ background: "#EFD959", borderRadius: "40px 40px 0 0" }}
-              >
-                {filteredRecipes.length ? (
-                  filteredRecipes.map((recipe, index) => (
-                    <RecipeCard
-                      key={index}
-                      recipe={recipe}
-                      recipes={recipes}
-                      setFilteredRecipes={setFilteredRecipes}
-                      setRecipes={setRecipes}
-                      filteredRecipes={filteredRecipes}
-                    />
-                  ))
-                ) : (
-                  <NoResultsFoundRecipe
-                    isFocus={isFocus}
-                    recipes={recipes}
-                    setFilteredRecipes={setFilteredRecipes}
-                  />
-                )}
-                <br />
-                <br />
-              </div>
-            </IonContent>
+            <HomeHeader {...headerProps} />
+            <RecipeContent
+              filteredRecipes={filteredRecipes}
+              recipes={recipes}
+              setFilteredRecipes={setFilteredRecipes}
+              setRecipes={setRecipes}
+              isFocus={isFocus}
+            />
           </div>
         </IonTab>
 
         {/* Add Recipe Tab */}
         <IonTab tab="add">
-          <div id="add-page">
-            <IonContent
-              scrollY={true}
-              style={{
-                minHeight: "45vh",
-              }}
-            >
-              <h1>Add Recipe</h1>
-            </IonContent>
-          </div>
+          <AddRecipeTab />
         </IonTab>
 
         {/* Favorites Tab */}
         <IonTab tab="favorites">
-          <div id="favorites-page">
-          <HeaderTab />
-            <IonContent
-              scrollY={true}
-              style={{
-                minHeight: "45vh",
-              }}
-            >
-              <h1>Favorites Tab</h1>
-            </IonContent>
-          </div>
+          <FavoritesTab headerProps={headerProps} />
         </IonTab>
 
-        <IonTabBar
-          slot="bottom"
-          style={{
-            borderRadius: "25px 25px 0 0",
-          }}
-        >
-          <IonTabButton tab="home">
-            <IonIcon icon={homeOutline} />
-          </IonTabButton>
-          <IonTabButton tab="add">
-            <div
-              style={{
-                fontSize: "2rem",
-                background: "#ECD659",
-                height: "45px",
-                width: "45px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "50%",
-              }}
-            >
-              <IonIcon icon={addOutline} />
-            </div>
-          </IonTabButton>
-          <IonTabButton tab="favorites">
-            <IonIcon icon={heartOutline} />
-          </IonTabButton>
-        </IonTabBar>
+        <TabBar />
       </IonTabs>
     </IonPage>
   );
