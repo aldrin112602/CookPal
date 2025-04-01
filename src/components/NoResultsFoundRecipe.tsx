@@ -1,14 +1,27 @@
 import { IonIcon } from "@ionic/react";
 import { addOutline, searchOutline } from "ionicons/icons";
 
-// Define Recipe type
+interface User {
+  id: number;
+  name: string;
+  profile: string;
+}
+
 interface Recipe {
   id: number;
-  image: string;
+  user_id: number;
   title: string;
-  time: string;
-  price: string;
-  isFavorite: boolean;
+  image: string | null;
+  description: string;
+  preparation_time: string;
+  serves: number;
+  cooking_instructions: string;
+  created_at: string;
+  updated_at: string;
+  time_ago: string;
+  user: User;
+  ingredients: any[];
+  isFavorite?: boolean;
 }
 
 interface NoResultsFoundRecipeProps {

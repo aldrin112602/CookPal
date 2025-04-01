@@ -3,11 +3,35 @@ import { IonContent } from "@ionic/react";
 import RecipeCard from "../RecipeCard";
 import NoResultsFoundRecipe from "../NoResultsFoundRecipe";
 
+interface User {
+  id: number;
+  name: string;
+  profile: string;
+}
+
+interface AppRecipe {
+  id: number;
+  user_id: number;
+  title: string;
+  image: string | null;
+  description: string;
+  preparation_time: string;
+  serves: number;
+  cooking_instructions: string;
+  created_at: string;
+  updated_at: string;
+  time_ago: string;
+  user: User;
+  ingredients: any[];
+  isFavorite?: boolean;
+}
+
+
 interface RecipeContentProps {
   filteredRecipes: any[];
-  recipes: any[];
-  setFilteredRecipes: (recipes: any[]) => void;
-  setRecipes: (recipes: any[]) => void;
+  recipes: AppRecipe[];
+  setFilteredRecipes: React.Dispatch<React.SetStateAction<AppRecipe[]>>;
+  setRecipes: React.Dispatch<React.SetStateAction<AppRecipe[]>>;
   isFocus: boolean;
 }
 
